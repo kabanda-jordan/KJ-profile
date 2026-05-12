@@ -163,10 +163,26 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
-    await new Promise((r) => setTimeout(r, 1600));
-    setStatus("sent");
-    setForm({ name: "", email: "", subject: "", message: "" });
-    setTimeout(() => setStatus("idle"), 5000);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (res.ok) {
+        setStatus("sent");
+        setForm({ name: "", email: "", subject: "", message: "" });
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 5000);
+      }
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 5000);
+    }
   };
 
   const copyEmail = () => {
@@ -388,6 +404,8 @@ export default function Contact() {
                 fontFamily: "var(--font-syne)",
                 ...(status === "sent"
                   ? { background: "rgba(16,185,129,0.15)", color: "#10b981", border: "1px solid rgba(16,185,129,0.3)" }
+                  : status === "error"
+                  ? { background: "rgba(239,68,68,0.12)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.3)" }
                   : status === "sending"
                   ? { background: "rgba(0,255,136,0.08)", color: "var(--accent)", border: "1px solid rgba(0,255,136,0.2)", cursor: "not-allowed" }
                   : { background: "var(--accent)", color: "#000", boxShadow: "0 0 24px rgba(0,255,136,0.2)" }),
@@ -403,7 +421,12 @@ export default function Contact() {
                 {status === "sent" && (
                   <motion.div key="sent" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="flex items-center gap-2">
                     <Check size={16} />
-                    Message delivered ✓
+                    Message sent!
+                  </motion.div>
+                )}
+                {status === "error" && (
+                  <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                    Something went wrong, try again
                   </motion.div>
                 )}
                 {status === "idle" && (
