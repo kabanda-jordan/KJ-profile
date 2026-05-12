@@ -32,14 +32,26 @@ export default function CustomCursor() {
     };
 
     const onMouseEnterLink = () => {
-      cursor.style.transform = "translate(-50%, -50%) scale(1.8)";
-      cursor.style.borderColor = "rgba(6, 182, 212, 0.9)";
+      cursor.style.transform = "translate(-50%, -50%) scale(2)";
+      cursor.style.borderColor = "rgba(0, 255, 136, 0.9)";
+      cursor.style.background = "rgba(0, 255, 136, 0.06)";
     };
 
     const onMouseLeaveLink = () => {
       cursor.style.transform = "translate(-50%, -50%) scale(1)";
-      cursor.style.borderColor = "rgba(59, 130, 246, 0.8)";
+      cursor.style.borderColor = "rgba(0, 255, 136, 0.5)";
+      cursor.style.background = "transparent";
     };
+
+    const onMouseDown = () => {
+      cursor.style.transform = "translate(-50%, -50%) scale(0.8)";
+    };
+    const onMouseUp = () => {
+      cursor.style.transform = "translate(-50%, -50%) scale(1)";
+    };
+
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("mouseup", onMouseUp);
 
     document.addEventListener("mousemove", onMouseMove);
     animate();
@@ -52,6 +64,8 @@ export default function CustomCursor() {
 
     return () => {
       document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("mouseup", onMouseUp);
     };
   }, []);
 
@@ -59,12 +73,16 @@ export default function CustomCursor() {
     <>
       <div
         ref={cursorRef}
-        className="fixed pointer-events-none z-[9999] w-8 h-8 rounded-full border border-blue-500/70 -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 hidden md:block"
-        style={{ transition: "transform 0.2s ease, border-color 0.2s ease" }}
+        className="fixed pointer-events-none z-[9999] w-8 h-8 rounded-full -translate-x-1/2 -translate-y-1/2 hidden md:block"
+        style={{
+          border: "1.5px solid rgba(0, 255, 136, 0.5)",
+          transition: "transform 0.2s ease, border-color 0.2s ease, background 0.2s ease",
+        }}
       />
       <div
         ref={dotRef}
-        className="fixed pointer-events-none z-[9999] w-1.5 h-1.5 rounded-full bg-blue-400 -translate-x-1/2 -translate-y-1/2 hidden md:block"
+        className="fixed pointer-events-none z-[9999] w-1.5 h-1.5 rounded-full -translate-x-1/2 -translate-y-1/2 hidden md:block"
+        style={{ background: "var(--accent)" }}
       />
     </>
   );

@@ -1,28 +1,182 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Send, GitBranch, Link, Mail, MapPin, Terminal } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Send, GitBranch, Link, Mail, MapPin, Check, Copy, Clock } from "lucide-react";
 import SectionWrapper from "@/components/ui/SectionWrapper";
+
+const MAX_MSG = 500;
+
+function FloatingInput({
+  label,
+  type = "text",
+  value,
+  onChange,
+  required,
+  placeholder,
+}: {
+  label: string;
+  type?: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+  placeholder?: string;
+}) {
+  const [focused, setFocused] = useState(false);
+  const lifted = focused || value.length > 0;
+
+  return (
+    <div className="relative">
+      <label
+        className="absolute left-4 transition-all duration-200 pointer-events-none z-10"
+        style={{
+          top: lifted ? "6px" : "50%",
+          transform: lifted ? "translateY(0) scale(0.8)" : "translateY(-50%) scale(1)",
+          transformOrigin: "left",
+          fontFamily: "var(--font-mono)",
+          fontSize: "12px",
+          color: focused ? "var(--accent)" : "var(--text-3)",
+        }}
+      >
+        {label}
+      </label>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        required={required}
+        placeholder={lifted ? placeholder : ""}
+        className="w-full px-4 pt-6 pb-2.5 rounded-xl text-sm bg-transparent transition-all duration-200"
+        style={{
+          fontFamily: "var(--font-mono)",
+          color: "var(--text-1)",
+          border: `1px solid ${focused ? "rgba(0,255,136,0.4)" : "rgba(255,255,255,0.07)"}`,
+          background: "rgba(255,255,255,0.02)",
+          outline: "none",
+          boxShadow: focused ? "0 0 0 3px rgba(0,255,136,0.06)" : "none",
+        }}
+      />
+    </div>
+  );
+}
+
+function FloatingTextarea({
+  label,
+  value,
+  onChange,
+  required,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+}) {
+  const [focused, setFocused] = useState(false);
+  const lifted = focused || value.length > 0;
+
+  return (
+    <div className="relative">
+      <label
+        className="absolute left-4 transition-all duration-200 pointer-events-none z-10"
+        style={{
+          top: lifted ? "8px" : "16px",
+          transform: lifted ? "scale(0.8)" : "scale(1)",
+          transformOrigin: "left",
+          fontFamily: "var(--font-mono)",
+          fontSize: "12px",
+          color: focused ? "var(--accent)" : "var(--text-3)",
+        }}
+      >
+        {label}
+      </label>
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value.slice(0, MAX_MSG))}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        required={required}
+        rows={5}
+        className="w-full px-4 pt-8 pb-3 rounded-xl text-sm bg-transparent resize-none transition-all duration-200"
+        style={{
+          fontFamily: "var(--font-mono)",
+          color: "var(--text-1)",
+          border: `1px solid ${focused ? "rgba(0,255,136,0.4)" : "rgba(255,255,255,0.07)"}`,
+          background: "rgba(255,255,255,0.02)",
+          outline: "none",
+          boxShadow: focused ? "0 0 0 3px rgba(0,255,136,0.06)" : "none",
+        }}
+      />
+      <div
+        className="absolute bottom-3 right-4 text-xs"
+        style={{
+          fontFamily: "var(--font-mono)",
+          color: value.length > MAX_MSG * 0.9 ? "#ef4444" : "var(--text-3)",
+        }}
+      >
+        {value.length}/{MAX_MSG}
+      </div>
+    </div>
+  );
+}
+
+function TimezoneStatus() {
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    const update = () => {
+      const now = new Date();
+      // EAT = UTC+3
+      const eatOffset = 3 * 60;
+      const localOffset = -now.getTimezoneOffset();
+      const eatTime = new Date(now.getTime() + (eatOffset - localOffset) * 60000);
+      const h = eatTime.getUTCHours();
+      const m = eatTime.getUTCMinutes().toString().padStart(2, "0");
+      const period = h >= 6 && h < 20 ? "likely online" : "probably offline";
+      const timeStr = `${h % 12 || 12}:${m} ${h >= 12 ? "PM" : "AM"}`;
+      setStatus(`Currently ${timeStr} in East Africa — ${period}`);
+    };
+    update();
+    const id = setInterval(update, 60000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div
+      className="flex items-center gap-2 text-xs"
+      style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}
+    >
+      <Clock size={12} style={{ color: "var(--accent)" }} />
+      {status}
+    </div>
+  );
+}
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [copied, setCopied] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
-    // Simulate send
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 1600));
     setStatus("sent");
     setForm({ name: "", email: "", subject: "", message: "" });
-    setTimeout(() => setStatus("idle"), 4000);
+    setTimeout(() => setStatus("idle"), 5000);
+  };
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText("kabandajordan@proton.me");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const socials = [
-    { icon: GitBranch, label: "GitHub", handle: "@kabanda-jordan", href: "https://github.com/kabanda-jordan", color: "hover:text-white" },
-    { icon: Link, label: "LinkedIn", handle: "kabanda-jordan", href: "https://linkedin.com/in/kabandajordan", color: "hover:text-blue-400" },
-    { icon: Mail, label: "Email", handle: "kabandajordan@proton.me", href: "mailto:kabandajordan@proton.me", color: "hover:text-cyan-400" },
+    { icon: GitBranch, label: "GitHub", handle: "@kabanda-jordan", href: "https://github.com/kabanda-jordan" },
+    { icon: Link, label: "LinkedIn", handle: "kabanda-jordan", href: "https://linkedin.com/in/kabandajordan" },
+    { icon: Mail, label: "Email", handle: "kabandajordan@proton.me", href: "mailto:kabandajordan@proton.me", copyable: true },
   ];
 
   return (
@@ -31,8 +185,10 @@ export default function Contact() {
       label="// contact.init()"
       title="Let's build something"
       subtitle="Open to interesting engineering problems, collaborations, and opportunities."
+      sectionNumber="09"
+      bgVariant="alt2"
     >
-      <div className="grid lg:grid-cols-2 gap-12">
+      <div className="grid lg:grid-cols-2 gap-14">
         {/* Left: Info */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -41,7 +197,7 @@ export default function Contact() {
           transition={{ duration: 0.7 }}
           className="space-y-8"
         >
-          <div className="space-y-4 text-white/45 text-sm leading-relaxed">
+          <div className="space-y-4 text-sm leading-relaxed" style={{ color: "var(--text-3)", fontWeight: 300 }}>
             <p>
               If you&apos;re working on something at the intersection of systems engineering, AI, security,
               or fintech — I&apos;m interested. Whether it&apos;s a collaboration, a role, or just a technical
@@ -53,42 +209,86 @@ export default function Contact() {
             </p>
           </div>
 
-          {/* Location */}
-          <div className="flex items-center gap-2 text-sm text-white/35 font-mono">
-            <MapPin size={14} className="text-blue-400/60" />
-            East Africa — Remote-first
+          {/* Location + timezone */}
+          <div className="space-y-2">
+            <div
+              className="flex items-center gap-2 text-sm"
+              style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}
+            >
+              <MapPin size={14} style={{ color: "var(--accent)" }} />
+              East Africa — Remote-first
+            </div>
+            <TimezoneStatus />
           </div>
 
           {/* Socials */}
           <div className="space-y-3">
-            {socials.map(({ icon: Icon, label, handle, href, color }) => (
-              <a
+            {socials.map(({ icon: Icon, label, handle, href, copyable }) => (
+              <div
                 key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`flex items-center gap-4 p-4 glass rounded-xl border border-white/5 hover:border-blue-500/20 transition-all group ${color}`}
+                className="flex items-center gap-4 p-4 rounded-xl glass border group transition-all duration-200"
+                style={{ borderColor: "rgba(255,255,255,0.05)" }}
               >
-                <div className="w-9 h-9 rounded-lg bg-white/3 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Icon size={16} className="text-white/40 group-hover:text-current transition-colors" />
-                </div>
-                <div>
-                  <div className="text-xs text-white/25 font-mono">{label}</div>
-                  <div className="text-sm text-white/60 font-mono group-hover:text-current transition-colors">{handle}</div>
-                </div>
-              </a>
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 flex-1 min-w-0"
+                >
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
+                    style={{ background: "rgba(255,255,255,0.04)" }}
+                  >
+                    <Icon size={16} style={{ color: "var(--text-3)" }} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs mb-0.5" style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}>{label}</div>
+                    <div className="text-sm truncate" style={{ fontFamily: "var(--font-mono)", color: "var(--text-2)" }}>{handle}</div>
+                  </div>
+                </a>
+                {copyable && (
+                  <button
+                    onClick={copyEmail}
+                    className="p-2 rounded-lg transition-all duration-200 flex-shrink-0"
+                    style={{
+                      color: copied ? "var(--accent)" : "var(--text-3)",
+                      background: copied ? "rgba(0,255,136,0.08)" : "transparent",
+                    }}
+                    aria-label="Copy email"
+                  >
+                    <AnimatePresence mode="wait">
+                      {copied ? (
+                        <motion.div key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                          <Check size={14} />
+                        </motion.div>
+                      ) : (
+                        <motion.div key="copy" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                          <Copy size={14} />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                )}
+              </div>
             ))}
           </div>
 
-          {/* Terminal note */}
-          <div className="glass rounded-xl border border-white/5 p-4 font-mono text-xs">
-            <div className="text-white/20 mb-2">// availability_status</div>
-            <div className="flex items-center gap-2 text-green-400/70">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+          {/* Availability */}
+          <div
+            className="rounded-xl p-4 text-xs space-y-2"
+            style={{
+              background: "rgba(0,255,136,0.03)",
+              border: "1px solid rgba(0,255,136,0.1)",
+              fontFamily: "var(--font-mono)",
+            }}
+          >
+            <div style={{ color: "var(--text-3)" }} className="mb-3">// availability_status</div>
+            <div className="flex items-center gap-2" style={{ color: "var(--accent)" }}>
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)" }} />
               Open to full-time roles and freelance projects
             </div>
-            <div className="flex items-center gap-2 text-blue-400/70 mt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+            <div className="flex items-center gap-2" style={{ color: "#3b82f6" }}>
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#3b82f6" }} />
               Interested in distributed systems, AI infra, security
             </div>
           </div>
@@ -103,77 +303,73 @@ export default function Contact() {
         >
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
-              {[
-                { key: "name", label: "Name", placeholder: "Your name", type: "text" },
-                { key: "email", label: "Email", placeholder: "your@email.com", type: "email" },
-              ].map(({ key, label, placeholder, type }) => (
-                <div key={key}>
-                  <label className="block text-xs font-mono text-white/30 mb-1.5">{label}</label>
-                  <input
-                    type={type}
-                    value={form[key as keyof typeof form]}
-                    onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-                    placeholder={placeholder}
-                    required
-                    className="w-full px-4 py-3 glass rounded-xl border border-white/8 text-white/80 text-sm placeholder:text-white/20 focus:outline-none focus:border-blue-500/40 transition-colors font-mono bg-transparent"
-                  />
-                </div>
-              ))}
-            </div>
-
-            <div>
-              <label className="block text-xs font-mono text-white/30 mb-1.5">Subject</label>
-              <input
-                type="text"
-                value={form.subject}
-                onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
-                placeholder="What's this about?"
+              <FloatingInput
+                label="Name"
+                value={form.name}
+                onChange={(v) => setForm((f) => ({ ...f, name: v }))}
                 required
-                className="w-full px-4 py-3 glass rounded-xl border border-white/8 text-white/80 text-sm placeholder:text-white/20 focus:outline-none focus:border-blue-500/40 transition-colors font-mono bg-transparent"
+                placeholder="Your name"
+              />
+              <FloatingInput
+                label="Email"
+                type="email"
+                value={form.email}
+                onChange={(v) => setForm((f) => ({ ...f, email: v }))}
+                required
+                placeholder="your@email.com"
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-mono text-white/30 mb-1.5">Message</label>
-              <textarea
-                value={form.message}
-                onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                placeholder="Tell me what you're building and why it's interesting..."
-                required
-                rows={5}
-                className="w-full px-4 py-3 glass rounded-xl border border-white/8 text-white/80 text-sm placeholder:text-white/20 focus:outline-none focus:border-blue-500/40 transition-colors font-mono bg-transparent resize-none"
-              />
-            </div>
+            <FloatingInput
+              label="Subject"
+              value={form.subject}
+              onChange={(v) => setForm((f) => ({ ...f, subject: v }))}
+              required
+              placeholder="What's this about?"
+            />
+
+            <FloatingTextarea
+              label="Message"
+              value={form.message}
+              onChange={(v) => setForm((f) => ({ ...f, message: v }))}
+              required
+            />
 
             <motion.button
               type="submit"
               disabled={status === "sending" || status === "sent"}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-mono font-medium transition-all ${
-                status === "sent"
-                  ? "bg-green-600/80 text-white border border-green-500/30"
+              whileHover={status === "idle" ? { scale: 1.01 } : {}}
+              whileTap={status === "idle" ? { scale: 0.98 } : {}}
+              className="w-full flex items-center justify-center gap-2.5 py-4 rounded-xl text-sm font-semibold transition-all duration-300"
+              style={{
+                fontFamily: "var(--font-syne)",
+                ...(status === "sent"
+                  ? { background: "rgba(16,185,129,0.15)", color: "#10b981", border: "1px solid rgba(16,185,129,0.3)" }
                   : status === "sending"
-                  ? "bg-blue-600/50 text-white/60 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-500 text-white glow-blue"
-              }`}
+                  ? { background: "rgba(0,255,136,0.08)", color: "var(--accent)", border: "1px solid rgba(0,255,136,0.2)", cursor: "not-allowed" }
+                  : { background: "var(--accent)", color: "#000", boxShadow: "0 0 24px rgba(0,255,136,0.2)" }),
+              }}
             >
-              {status === "sending" ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Transmitting...
-                </>
-              ) : status === "sent" ? (
-                <>
-                  <Terminal size={15} />
-                  Message delivered ✓
-                </>
-              ) : (
-                <>
-                  <Send size={15} />
-                  Send Message
-                </>
-              )}
+              <AnimatePresence mode="wait">
+                {status === "sending" && (
+                  <motion.div key="sending" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    Transmitting...
+                  </motion.div>
+                )}
+                {status === "sent" && (
+                  <motion.div key="sent" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="flex items-center gap-2">
+                    <Check size={16} />
+                    Message delivered ✓
+                  </motion.div>
+                )}
+                {status === "idle" && (
+                  <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+                    <Send size={15} />
+                    Send Message
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.button>
           </form>
         </motion.div>

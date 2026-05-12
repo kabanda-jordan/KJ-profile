@@ -1,171 +1,160 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 
-const categories = [
-  {
-    label: "Languages",
-    color: "blue",
-    items: [
-      { name: "JavaScript", level: 90 },
-      { name: "TypeScript", level: 88 },
-      { name: "Python", level: 85 },
-      { name: "Go", level: 70 },
-      { name: "Java", level: 72 },
-      { name: "C", level: 65 },
-      { name: "C++", level: 60 },
-      { name: "SQL", level: 82 },
-    ],
-  },
-  {
-    label: "Frontend",
-    color: "cyan",
-    items: [
-      { name: "React", level: 90 },
-      { name: "Next.js", level: 88 },
-      { name: "TailwindCSS", level: 92 },
-      { name: "Framer Motion", level: 75 },
-    ],
-  },
-  {
-    label: "Backend",
-    color: "purple",
-    items: [
-      { name: "Node.js", level: 88 },
-      { name: "Django", level: 80 },
-      { name: "Flask", level: 78 },
-      { name: "Spring Boot", level: 65 },
-      { name: "FastAPI", level: 75 },
-    ],
-  },
-  {
-    label: "Databases",
-    color: "green",
-    items: [
-      { name: "PostgreSQL", level: 85 },
-      { name: "MongoDB", level: 80 },
-      { name: "MySQL", level: 78 },
-      { name: "Redis", level: 70 },
-    ],
-  },
-  {
-    label: "AI & Data",
-    color: "yellow",
-    items: [
-      { name: "NumPy", level: 80 },
-      { name: "Pandas", level: 78 },
-      { name: "Matplotlib", level: 75 },
-      { name: "Scikit-learn", level: 72 },
-      { name: "TensorFlow", level: 65 },
-    ],
-  },
-  {
-    label: "Web3",
-    color: "orange",
-    items: [
-      { name: "Solidity", level: 65 },
-      { name: "Ethereum", level: 60 },
-      { name: "Hardhat", level: 62 },
-      { name: "Web3.js", level: 65 },
-      { name: "IPFS", level: 55 },
-    ],
-  },
-  {
-    label: "Security & Networking",
-    color: "red",
-    items: [
-      { name: "Linux / Kali", level: 88 },
-      { name: "Wireshark", level: 80 },
-      { name: "Burp Suite", level: 75 },
-      { name: "Metasploit", level: 65 },
-      { name: "Nmap", level: 82 },
-      { name: "Hydra", level: 60 },
-    ],
-  },
-  {
-    label: "DevOps & Infra",
-    color: "teal",
-    items: [
-      { name: "Docker", level: 80 },
-      { name: "Git", level: 92 },
-      { name: "Linux Admin", level: 85 },
-      { name: "Nginx", level: 72 },
-      { name: "CI/CD", level: 70 },
-    ],
-  },
+type Category = "All" | "Languages" | "Frontend" | "Backend" | "AI" | "Security" | "DevOps" | "Web3";
+
+interface Tech {
+  name: string;
+  category: Category[];
+  icon: string; // devicon class
+  color: string;
+}
+
+const techs: Tech[] = [
+  // Languages
+  { name: "JavaScript", category: ["Languages"], icon: "devicon-javascript-plain", color: "#f7df1e" },
+  { name: "TypeScript", category: ["Languages"], icon: "devicon-typescript-plain", color: "#3178c6" },
+  { name: "Python", category: ["Languages"], icon: "devicon-python-plain", color: "#3776ab" },
+  { name: "Go", category: ["Languages"], icon: "devicon-go-plain", color: "#00add8" },
+  { name: "Java", category: ["Languages"], icon: "devicon-java-plain", color: "#ed8b00" },
+  { name: "C", category: ["Languages"], icon: "devicon-c-plain", color: "#a8b9cc" },
+  { name: "C++", category: ["Languages"], icon: "devicon-cplusplus-plain", color: "#00599c" },
+  { name: "SQL", category: ["Languages"], icon: "devicon-postgresql-plain", color: "#336791" },
+  // Frontend
+  { name: "React", category: ["Frontend"], icon: "devicon-react-original", color: "#61dafb" },
+  { name: "Next.js", category: ["Frontend"], icon: "devicon-nextjs-plain", color: "#ffffff" },
+  { name: "TailwindCSS", category: ["Frontend"], icon: "devicon-tailwindcss-plain", color: "#06b6d4" },
+  { name: "Framer Motion", category: ["Frontend"], icon: "devicon-framermotion-original", color: "#bb4b96" },
+  // Backend
+  { name: "Node.js", category: ["Backend"], icon: "devicon-nodejs-plain", color: "#339933" },
+  { name: "Django", category: ["Backend"], icon: "devicon-django-plain", color: "#092e20" },
+  { name: "Flask", category: ["Backend"], icon: "devicon-flask-original", color: "#ffffff" },
+  { name: "FastAPI", category: ["Backend"], icon: "devicon-fastapi-plain", color: "#009688" },
+  { name: "PostgreSQL", category: ["Backend"], icon: "devicon-postgresql-plain", color: "#336791" },
+  { name: "MongoDB", category: ["Backend"], icon: "devicon-mongodb-plain", color: "#47a248" },
+  { name: "Redis", category: ["Backend"], icon: "devicon-redis-plain", color: "#dc382d" },
+  // AI
+  { name: "NumPy", category: ["AI"], icon: "devicon-numpy-plain", color: "#013243" },
+  { name: "Pandas", category: ["AI"], icon: "devicon-pandas-plain", color: "#150458" },
+  { name: "Scikit-learn", category: ["AI"], icon: "devicon-scikitlearn-plain", color: "#f7931e" },
+  { name: "TensorFlow", category: ["AI"], icon: "devicon-tensorflow-original", color: "#ff6f00" },
+  { name: "Matplotlib", category: ["AI"], icon: "devicon-matplotlib-plain", color: "#11557c" },
+  // Security
+  { name: "Kali Linux", category: ["Security"], icon: "devicon-linux-plain", color: "#557c94" },
+  { name: "Wireshark", category: ["Security"], icon: "devicon-linux-plain", color: "#1679a7" },
+  { name: "Burp Suite", category: ["Security"], icon: "devicon-linux-plain", color: "#ff6633" },
+  { name: "Metasploit", category: ["Security"], icon: "devicon-linux-plain", color: "#2a2a2a" },
+  { name: "Nmap", category: ["Security"], icon: "devicon-linux-plain", color: "#4a90d9" },
+  // DevOps
+  { name: "Docker", category: ["DevOps"], icon: "devicon-docker-plain", color: "#2496ed" },
+  { name: "Git", category: ["DevOps"], icon: "devicon-git-plain", color: "#f05032" },
+  { name: "Linux", category: ["DevOps"], icon: "devicon-linux-plain", color: "#fcc624" },
+  { name: "Nginx", category: ["DevOps"], icon: "devicon-nginx-plain", color: "#009639" },
+  { name: "GitHub Actions", category: ["DevOps"], icon: "devicon-github-original", color: "#ffffff" },
+  // Web3
+  { name: "Solidity", category: ["Web3"], icon: "devicon-solidity-plain", color: "#363636" },
+  { name: "Ethereum", category: ["Web3"], icon: "devicon-ethereum-original", color: "#627eea" },
+  { name: "Hardhat", category: ["Web3"], icon: "devicon-nodejs-plain", color: "#fff100" },
+  { name: "Web3.js", category: ["Web3"], icon: "devicon-javascript-plain", color: "#f16822" },
+  { name: "IPFS", category: ["Web3"], icon: "devicon-linux-plain", color: "#65c2cb" },
 ];
 
-const colorMap: Record<string, { border: string; text: string; bg: string; bar: string }> = {
-  blue: { border: "border-blue-500/20", text: "text-blue-400", bg: "bg-blue-500/5", bar: "bg-blue-500" },
-  cyan: { border: "border-cyan-500/20", text: "text-cyan-400", bg: "bg-cyan-500/5", bar: "bg-cyan-500" },
-  purple: { border: "border-purple-500/20", text: "text-purple-400", bg: "bg-purple-500/5", bar: "bg-purple-500" },
-  green: { border: "border-green-500/20", text: "text-green-400", bg: "bg-green-500/5", bar: "bg-green-500" },
-  yellow: { border: "border-yellow-500/20", text: "text-yellow-400", bg: "bg-yellow-500/5", bar: "bg-yellow-500" },
-  orange: { border: "border-orange-500/20", text: "text-orange-400", bg: "bg-orange-500/5", bar: "bg-orange-500" },
-  red: { border: "border-red-500/20", text: "text-red-400", bg: "bg-red-500/5", bar: "bg-red-500" },
-  teal: { border: "border-teal-500/20", text: "text-teal-400", bg: "bg-teal-500/5", bar: "bg-teal-500" },
+const categories: Category[] = ["All", "Languages", "Frontend", "Backend", "AI", "Security", "DevOps", "Web3"];
+
+const categoryColors: Record<Category, string> = {
+  All: "var(--accent)",
+  Languages: "#3b82f6",
+  Frontend: "#06b6d4",
+  Backend: "#8b5cf6",
+  AI: "#f59e0b",
+  Security: "#ef4444",
+  DevOps: "#10b981",
+  Web3: "#f97316",
 };
 
 export default function TechStack() {
+  const [active, setActive] = useState<Category>("All");
+
+  const filtered = active === "All" ? techs : techs.filter((t) => t.category.includes(active));
+
   return (
     <SectionWrapper
       id="stack"
       label="// tech_stack.json"
       title="Tools of the trade"
       subtitle="The technologies I use to build, break, and understand systems."
+      sectionNumber="02"
+      bgVariant="alt1"
     >
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {categories.map((cat, catIdx) => {
-          const c = colorMap[cat.color];
+      {/* Filter tabs */}
+      <div className="flex flex-wrap justify-center gap-2 mb-10">
+        {categories.map((cat) => {
+          const isActive = active === cat;
           return (
-            <motion.div
-              key={cat.label}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: catIdx * 0.07, duration: 0.5 }}
-              whileHover={{ y: -4, scale: 1.01 }}
-              className={`glass rounded-xl border ${c.border} p-5 hover:${c.border.replace("/20", "/40")} transition-all group`}
+            <button
+              key={cat}
+              onClick={() => setActive(cat)}
+              className="px-4 py-2 rounded-full text-xs font-mono transition-all duration-200"
+              style={{
+                background: isActive ? `${categoryColors[cat]}18` : "rgba(255,255,255,0.03)",
+                border: `1px solid ${isActive ? `${categoryColors[cat]}40` : "rgba(255,255,255,0.06)"}`,
+                color: isActive ? categoryColors[cat] : "var(--text-3)",
+                fontFamily: "var(--font-mono)",
+              }}
             >
-              {/* Category header */}
-              <div className="flex items-center gap-2 mb-4">
-                <div className={`w-1.5 h-1.5 rounded-full ${c.bar}`} />
-                <span className={`text-xs font-mono font-semibold ${c.text} uppercase tracking-wider`}>
-                  {cat.label}
-                </span>
-              </div>
-
-              {/* Skills */}
-              <div className="space-y-3">
-                {cat.items.map((item, i) => (
-                  <motion.div
-                    key={item.name}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: catIdx * 0.07 + i * 0.04 }}
-                  >
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-xs text-white/60 font-mono">{item.name}</span>
-                      <span className={`text-xs font-mono ${c.text} opacity-60`}>{item.level}%</span>
-                    </div>
-                    <div className="h-0.5 bg-white/5 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${item.level}%` }}
-                        viewport={{ once: true }}
-                        transition={{ delay: catIdx * 0.07 + i * 0.04 + 0.2, duration: 0.8, ease: "easeOut" }}
-                        className={`h-full ${c.bar} rounded-full`}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+              {cat}
+            </button>
           );
         })}
       </div>
+
+      {/* Badge grid */}
+      <motion.div
+        layout
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3"
+      >
+        <AnimatePresence mode="popLayout">
+          {filtered.map((tech) => (
+            <motion.div
+              key={tech.name}
+              layout
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.85 }}
+              transition={{ duration: 0.2 }}
+              whileHover={{ y: -3, scale: 1.04 }}
+              className="flex flex-col items-center gap-2 p-4 rounded-xl glass border cursor-default group transition-all duration-200"
+              style={{
+                borderColor: "rgba(255,255,255,0.05)",
+              }}
+            >
+              {/* Icon via devicons CDN */}
+              <i
+                className={`${tech.icon} text-2xl transition-transform duration-200 group-hover:scale-110`}
+                style={{ color: tech.color }}
+              />
+              <span
+                className="text-xs text-center leading-tight"
+                style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}
+              >
+                {tech.name}
+              </span>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Count */}
+      <p
+        className="text-center mt-8 text-xs"
+        style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}
+      >
+        {filtered.length} technologies
+        {active !== "All" && ` in ${active}`}
+      </p>
     </SectionWrapper>
   );
 }

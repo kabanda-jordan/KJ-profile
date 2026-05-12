@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, Syne, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
+  weight: ["300", "400", "500", "600"],
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  variable: "--font-syne",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -35,7 +44,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://kabandajordan.dev",
+    url: "https://kabanda-jordan.vercel.app",
     title: "Kabanda Jordan — Systems Engineer & AI Researcher",
     description:
       "Building at the intersection of distributed systems, AI, cybersecurity, and fintech infrastructure.",
@@ -46,20 +55,27 @@ export const metadata: Metadata = {
     title: "Kabanda Jordan — Systems Engineer",
     description: "Full-Stack Engineer · AI Researcher · Cybersecurity · FinTech Builder",
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} dark`}>
-      <body className={`${inter.className} antialiased bg-black text-white`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${syne.variable} ${jetbrainsMono.variable} dark`}
+    >
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+        />
+      </head>
+      <body
+        className={`${inter.className} antialiased bg-[#0a0a0a] text-white`}
+        style={{ fontFamily: "var(--font-inter), sans-serif" }}
+      >
         {children}
       </body>
     </html>

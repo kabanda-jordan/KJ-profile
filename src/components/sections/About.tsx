@@ -6,12 +6,12 @@ import { Code2, Server, Shield, Brain, Zap, GitBranch } from "lucide-react";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 
 const stats = [
-  { value: "4+", label: "Years Coding", icon: Code2, color: "text-blue-400" },
-  { value: "20+", label: "Projects Built", icon: GitBranch, color: "text-purple-400" },
-  { value: "8+", label: "Hackathons", icon: Zap, color: "text-yellow-400" },
-  { value: "15+", label: "Technologies", icon: Server, color: "text-cyan-400" },
-  { value: "500+", label: "GitHub Commits", icon: Brain, color: "text-green-400" },
-  { value: "3+", label: "Security Labs", icon: Shield, color: "text-red-400" },
+  { value: "4+", label: "Years Coding", icon: Code2, color: "#3b82f6" },
+  { value: "20+", label: "Projects Built", icon: GitBranch, color: "#8b5cf6" },
+  { value: "8+", label: "Hackathons", icon: Zap, color: "#f59e0b" },
+  { value: "15+", label: "Technologies", icon: Server, color: "#06b6d4" },
+  { value: "500+", label: "GitHub Commits", icon: Brain, color: "var(--accent)" },
+  { value: "3+", label: "Security Labs", icon: Shield, color: "#ef4444" },
 ];
 
 const traits = [
@@ -33,6 +33,8 @@ export default function About() {
       label="// about.md"
       title="Engineering from first principles"
       subtitle="Not just writing code — understanding the systems underneath it."
+      sectionNumber="01"
+      bgVariant="alt1"
     >
       <div className="grid lg:grid-cols-2 gap-16 items-start">
         {/* Left: Avatar + traits */}
@@ -43,16 +45,43 @@ export default function About() {
           transition={{ duration: 0.7 }}
           className="flex flex-col items-center lg:items-start gap-8"
         >
-          {/* Avatar */}
+          {/* Avatar placeholder — replace with real headshot */}
           <div className="relative">
-            <div className="w-48 h-48 rounded-2xl border border-blue-500/20 overflow-hidden glass flex items-center justify-center glow-blue">
-              <div className="w-full h-full bg-gradient-to-br from-blue-900/40 via-purple-900/30 to-cyan-900/20 flex items-center justify-center">
-                <span className="text-6xl font-bold gradient-text">KJ</span>
+            <div
+              className="w-52 h-52 rounded-2xl overflow-hidden flex items-center justify-center"
+              style={{
+                border: "1px solid rgba(0,255,136,0.2)",
+                background: "linear-gradient(135deg, rgba(0,255,136,0.06) 0%, rgba(59,130,246,0.06) 50%, rgba(139,92,246,0.06) 100%)",
+                boxShadow: "0 0 40px rgba(0,255,136,0.08)",
+              }}
+            >
+              {/* Abstract portrait illustration */}
+              <div className="text-center">
+                <div
+                  className="text-5xl font-bold mb-1"
+                  style={{ fontFamily: "var(--font-syne)", color: "var(--accent)" }}
+                >
+                  KJ
+                </div>
+                <div
+                  className="text-xs"
+                  style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}
+                >
+                  kabanda.jordan
+                </div>
               </div>
             </div>
             {/* Status dot */}
-            <div className="absolute -bottom-2 -right-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-mono">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            <div
+              className="absolute -bottom-2 -right-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs"
+              style={{
+                fontFamily: "var(--font-mono)",
+                background: "rgba(0,255,136,0.08)",
+                border: "1px solid rgba(0,255,136,0.2)",
+                color: "var(--accent)",
+              }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)" }} />
               Online
             </div>
           </div>
@@ -65,17 +94,31 @@ export default function About() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="px-3 py-1 text-xs font-mono rounded-full border border-white/8 text-white/50 bg-white/3 hover:border-blue-500/30 hover:text-blue-400/80 transition-all cursor-default"
+                transition={{ delay: i * 0.07 }}
+                whileHover={{ scale: 1.05 }}
+                className="px-3 py-1.5 text-xs rounded-full cursor-default transition-all duration-200"
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                  color: "var(--text-3)",
+                  background: "rgba(255,255,255,0.02)",
+                }}
               >
                 {trait}
               </motion.span>
             ))}
           </div>
 
-          {/* Quick info */}
-          <div className="glass rounded-xl border border-white/5 p-4 w-full font-mono text-xs space-y-2">
-            <div className="text-white/20 mb-3">// quick_info.json</div>
+          {/* Quick info terminal */}
+          <div
+            className="terminal-block p-4 w-full"
+          >
+            <div
+              className="text-xs mb-3"
+              style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}
+            >
+              // quick_info.json
+            </div>
             {[
               ["location", "East Africa 🌍"],
               ["focus", "Backend + AI + Security"],
@@ -83,10 +126,10 @@ export default function About() {
               ["editor", "Neovim / VS Code"],
               ["status", "Building in public"],
             ].map(([key, val]) => (
-              <div key={key} className="flex gap-2">
-                <span className="text-blue-400/60">&quot;{key}&quot;</span>
-                <span className="text-white/20">:</span>
-                <span className="text-green-400/70">&quot;{val}&quot;</span>
+              <div key={key} className="flex gap-2 text-xs mb-1" style={{ fontFamily: "var(--font-mono)" }}>
+                <span style={{ color: "#3b82f6" }}>&quot;{key}&quot;</span>
+                <span style={{ color: "var(--text-3)" }}>:</span>
+                <span style={{ color: "var(--accent)" }}>&quot;{val}&quot;</span>
               </div>
             ))}
           </div>
@@ -100,14 +143,15 @@ export default function About() {
           transition={{ duration: 0.7 }}
           className="space-y-6"
         >
-          <div className="space-y-4 text-white/55 leading-relaxed text-base">
+          <div className="space-y-5 text-base leading-relaxed" style={{ color: "var(--text-3)", fontWeight: 300 }}>
             <p>
               I started writing code because I wanted to understand how things worked — not just
               use them. That curiosity pulled me deep into backend systems, networking protocols,
               operating system internals, and eventually into the intersection of AI and security.
             </p>
             <p>
-              My engineering philosophy is simple: <span className="text-white/80">understand the constraints first</span>.
+              My engineering philosophy is simple:{" "}
+              <span style={{ color: "var(--text-1)", fontWeight: 500 }}>understand the constraints first</span>.
               Whether it&apos;s latency budgets in a trading system, memory pressure in an embedded
               environment, or attack surfaces in a web application — the constraints define the
               architecture. I don&apos;t reach for abstractions until I understand what&apos;s underneath them.
@@ -120,16 +164,22 @@ export default function About() {
             </p>
             <p>
               Right now I&apos;m focused on{" "}
-              <span className="text-blue-400/80">production-grade distributed systems</span>,{" "}
-              <span className="text-purple-400/80">AI-powered security tooling</span>, and{" "}
-              <span className="text-cyan-400/80">fintech infrastructure</span> — the kind of
+              <span style={{ color: "#3b82f6" }}>production-grade distributed systems</span>,{" "}
+              <span style={{ color: "#8b5cf6" }}>AI-powered security tooling</span>, and{" "}
+              <span style={{ color: "var(--accent)" }}>fintech infrastructure</span> — the kind of
               engineering where correctness and performance aren&apos;t optional.
             </p>
           </div>
 
           {/* Philosophy quote */}
-          <div className="border-l-2 border-blue-500/30 pl-4 py-1">
-            <p className="text-white/40 text-sm italic font-light">
+          <div
+            className="border-l-2 pl-5 py-2"
+            style={{ borderColor: "rgba(0,255,136,0.3)" }}
+          >
+            <p
+              className="text-sm italic"
+              style={{ color: "var(--text-3)", fontWeight: 300, lineHeight: 1.7 }}
+            >
               &quot;The best systems are the ones you don&apos;t notice — until they&apos;re gone.&quot;
             </p>
           </div>
@@ -143,12 +193,25 @@ export default function About() {
             key={label}
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: i * 0.1, duration: 0.5 }}
-            className="glass rounded-xl border border-white/5 p-4 text-center hover:border-blue-500/20 transition-all group"
+            transition={{ delay: i * 0.08, duration: 0.5 }}
+            whileHover={{ y: -4, scale: 1.03 }}
+            className="glass rounded-xl border p-4 text-center transition-all duration-200 group"
+            style={{ borderColor: "rgba(255,255,255,0.05)" }}
           >
-            <Icon size={18} className={`${color} mx-auto mb-2 group-hover:scale-110 transition-transform`} />
-            <div className={`text-2xl font-bold ${color} mb-1`}>{value}</div>
-            <div className="text-white/30 text-xs font-mono">{label}</div>
+            <Icon
+              size={18}
+              className="mx-auto mb-2 transition-transform duration-200 group-hover:scale-110"
+              style={{ color }}
+            />
+            <div
+              className="text-2xl font-bold mb-1"
+              style={{ color, fontFamily: "var(--font-syne)" }}
+            >
+              {value}
+            </div>
+            <div className="text-xs" style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}>
+              {label}
+            </div>
           </motion.div>
         ))}
       </div>

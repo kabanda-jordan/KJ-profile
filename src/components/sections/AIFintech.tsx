@@ -1,75 +1,253 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import { TrendingUp, Brain, AlertTriangle, BarChart3, Zap, Database } from "lucide-react";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 
+// ─── Animated counter ────────────────────────────────────────
+function useCountUp(target: string, inView: boolean) {
+  const [display, setDisplay] = useState("0");
+
+  useEffect(() => {
+    if (!inView) return;
+    const isMs = target.includes("ms");
+    const isTPS = target.includes("TPS");
+    const isPct = target.includes("%");
+    const isLt = target.startsWith("<");
+
+    const raw = parseFloat(target.replace(/[^0-9.]/g, ""));
+    const duration = 1400;
+    const start = performance.now();
+
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(eased * raw);
+
+      if (isMs) setDisplay(`<${current}ms`);
+      else if (isTPS) setDisplay(`${(current / 1000).toFixed(current >= 1000 ? 0 : 1)}K TPS`);
+      else if (isPct && isLt) setDisplay(`<${(eased * raw).toFixed(1)}%`);
+      else if (isPct) setDisplay(`${current}%+`);
+      else setDisplay(String(current));
+
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  }, [inView, target]);
+
+  return display;
+}
+
+function MetricCard({ label, value, color }: { label: string; value: string; color: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const display = useCountUp(value, inView);
+
+  return (
+    <div
+      ref={ref}
+      className="glass rounded-xl border p-5 text-center"
+      style={{ borderColor: "rgba(255,255,255,0.06)" }}
+    >
+      <div
+        className="text-2xl font-bold font-mono mb-1"
+        style={{ color, fontFamily: "var(--font-syne)" }}
+      >
+        {display}
+      </div>
+      <div className="text-xs" style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}>
+        {label}
+      </div>
+    </div>
+  );
+}
+
+// ─── Interactive chart ────────────────────────────────────────
+const chartData = [
+  { val: 40, period: "T1" },
+  { val: 65, period: "T2" },
+  { val: 45, period: "T3" },
+  { val: 80, period: "T4" },
+  { val: 55, period: "T5" },
+  { val: 90, period: "T6" },
+  { val: 70, period: "T7" },
+  { val: 85, period: "T8" },
+  { val: 60, period: "T9" },
+  { val: 95, period: "T10" },
+  { val: 75, period: "T11" },
+  { val: 88, period: "T12" },
+];
+
+function AnomalyChart() {
+  const [tooltip, setTooltip] = useState<{ val: number; period: string; x: number; y: number } | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true });
+
+  return (
+    <div ref={ref} className="glass rounded-2xl border p-6 mb-12" style={{ borderColor: "rgba(59,130,246,0.1)" }}>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <div className="text-xs mb-1" style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}>
+            // anomaly_detection.chart
+          </div>
+          <div className="text-sm font-semibold" style={{ color: "var(--text-2)", fontFamily: "var(--font-syne)" }}>
+            Transaction Risk Score — Last 12 Periods
+          </div>
+        </div>
+        <div className="flex items-center gap-4 text-xs" style={{ fontFamily: "var(--font-mono)" }}>
+          <span className="flex items-center gap-1.5" style={{ color: "rgba(59,130,246,0.7)" }}>
+            <span className="w-2 h-2 rounded-full bg-blue-500" />Normal
+          </span>
+          <span className="flex items-center gap-1.5" style={{ color: "rgba(239,68,68,0.7)" }}>
+            <span className="w-2 h-2 rounded-full bg-red-500" />Anomaly
+          </span>
+        </div>
+      </div>
+
+      {/* Bar chart */}
+      <div className="relative flex items-end gap-2 h-36">
+        {chartData.map((d, i) => {
+          const isAnomaly = d.val > 80;
+          return (
+            <motion.div
+              key={i}
+              initial={{ height: 0 }}
+              animate={inView ? { height: `${d.val}%` } : { height: 0 }}
+              transition={{ delay: i * 0.05 + 0.2, duration: 0.55, ease: "easeOut" }}
+              className="flex-1 rounded-t-sm relative cursor-pointer group"
+              style={{
+                background: isAnomaly
+                  ? "linear-gradient(to top, rgba(239,68,68,0.7), rgba(239,68,68,0.4))"
+                  : "linear-gradient(to top, rgba(59,130,246,0.6), rgba(59,130,246,0.3))",
+                minHeight: "4px",
+              }}
+              onMouseEnter={(e) => {
+                const rect = (e.target as HTMLElement).getBoundingClientRect();
+                const parentRect = (e.target as HTMLElement).closest(".relative")!.getBoundingClientRect();
+                setTooltip({
+                  val: d.val,
+                  period: d.period,
+                  x: rect.left - parentRect.left + rect.width / 2,
+                  y: rect.top - parentRect.top - 8,
+                });
+              }}
+              onMouseLeave={() => setTooltip(null)}
+            >
+              {/* Hover highlight */}
+              <div
+                className="absolute inset-0 rounded-t-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ background: "rgba(255,255,255,0.08)" }}
+              />
+            </motion.div>
+          );
+        })}
+
+        {/* Tooltip */}
+        {tooltip && (
+          <div
+            className="absolute pointer-events-none z-10 px-2.5 py-1.5 rounded-lg text-xs"
+            style={{
+              left: tooltip.x,
+              top: tooltip.y,
+              transform: "translate(-50%, -100%)",
+              background: "rgba(10,10,14,0.95)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              fontFamily: "var(--font-mono)",
+              color: "var(--text-1)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <span style={{ color: tooltip.val > 80 ? "#ef4444" : "#3b82f6" }}>
+              {tooltip.val}
+            </span>
+            {" "}— {tooltip.period}
+          </div>
+        )}
+      </div>
+
+      {/* X axis */}
+      <div className="flex gap-2 mt-2">
+        {chartData.map((d) => (
+          <div
+            key={d.period}
+            className="flex-1 text-center text-xs"
+            style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}
+          >
+            {d.period}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Domain cards ─────────────────────────────────────────────
 const domains = [
   {
     icon: AlertTriangle,
     title: "Fraud Detection",
-    color: "text-red-400",
-    border: "border-red-500/15",
-    bg: "bg-red-500/5",
+    color: "#ef4444",
+    border: "rgba(239,68,68,0.15)",
+    bg: "rgba(239,68,68,0.05)",
     desc: "Anomaly detection pipelines that flag suspicious transaction patterns in real time. Built on statistical baselines and ML classifiers trained on behavioral signals.",
     tags: ["Isolation Forest", "Z-Score", "Feature Engineering", "Real-time Scoring"],
   },
   {
     icon: TrendingUp,
     title: "Trading Analytics",
-    color: "text-blue-400",
-    border: "border-blue-500/15",
-    bg: "bg-blue-500/5",
+    color: "#3b82f6",
+    border: "rgba(59,130,246,0.15)",
+    bg: "rgba(59,130,246,0.05)",
     desc: "Quantitative analysis tools for trade journaling, performance attribution, and strategy backtesting. Focused on helping traders understand their edge — or lack of one.",
     tags: ["Backtesting", "Sharpe Ratio", "Drawdown Analysis", "Trade Psychology"],
   },
   {
     icon: Brain,
     title: "ML Experimentation",
-    color: "text-purple-400",
-    border: "border-purple-500/15",
-    bg: "bg-purple-500/5",
+    color: "#8b5cf6",
+    border: "rgba(139,92,246,0.15)",
+    bg: "rgba(139,92,246,0.05)",
     desc: "Hands-on ML work across classification, regression, and time-series forecasting. Focus on model interpretability and production deployment constraints.",
     tags: ["Scikit-learn", "Time Series", "Model Explainability", "Feature Selection"],
   },
   {
     icon: BarChart3,
     title: "Risk Engineering",
-    color: "text-cyan-400",
-    border: "border-cyan-500/15",
-    bg: "bg-cyan-500/5",
+    color: "#06b6d4",
+    border: "rgba(6,182,212,0.15)",
+    bg: "rgba(6,182,212,0.05)",
     desc: "Risk scoring engines that quantify exposure across multiple dimensions. Designed for systems where a wrong answer has financial consequences.",
     tags: ["VaR", "Risk Scoring", "Exposure Limits", "Stress Testing"],
   },
   {
     icon: Zap,
     title: "Edge AI Optimization",
-    color: "text-yellow-400",
-    border: "border-yellow-500/15",
-    bg: "bg-yellow-500/5",
+    color: "#f59e0b",
+    border: "rgba(245,158,11,0.15)",
+    bg: "rgba(245,158,11,0.05)",
     desc: "Optimizing ML inference for low-latency environments. Model quantization, pruning, and deployment on constrained hardware.",
     tags: ["Model Quantization", "ONNX", "Inference Optimization", "Edge Deployment"],
   },
   {
     icon: Database,
     title: "Low-Latency Systems",
-    color: "text-green-400",
-    border: "border-green-500/15",
-    bg: "bg-green-500/5",
+    color: "var(--accent)",
+    border: "rgba(0,255,136,0.15)",
+    bg: "rgba(0,255,136,0.05)",
     desc: "Backend infrastructure designed for microsecond-sensitive workloads. Memory layout optimization, lock-free data structures, kernel bypass networking.",
     tags: ["Lock-free Queues", "Memory Pools", "DPDK", "CPU Affinity"],
   },
 ];
 
 const metrics = [
-  { label: "Avg Detection Latency", value: "<50ms", color: "text-green-400" },
-  { label: "False Positive Rate", value: "<2%", color: "text-blue-400" },
-  { label: "Model Accuracy", value: "94%+", color: "text-purple-400" },
-  { label: "Throughput", value: "10K TPS", color: "text-cyan-400" },
+  { label: "Avg Detection Latency", value: "<50ms", color: "var(--accent)" },
+  { label: "False Positive Rate", value: "<2%", color: "#3b82f6" },
+  { label: "Model Accuracy", value: "94%+", color: "#8b5cf6" },
+  { label: "Throughput", value: "10K TPS", color: "#06b6d4" },
 ];
-
-// Simulated chart bars
-const chartData = [40, 65, 45, 80, 55, 90, 70, 85, 60, 95, 75, 88];
 
 export default function AIFintech() {
   return (
@@ -78,81 +256,18 @@ export default function AIFintech() {
       label="// ai_fintech.systems"
       title="AI & FinTech Engineering"
       subtitle="Where machine learning meets financial infrastructure. Performance and correctness are non-negotiable."
+      sectionNumber="06"
+      bgVariant="alt3"
     >
-      {/* Metrics bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
-      >
-        {metrics.map((m, i) => (
-          <motion.div
-            key={m.label}
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className="glass rounded-xl border border-white/5 p-4 text-center"
-          >
-            <div className={`text-2xl font-bold font-mono ${m.color} mb-1`}>{m.value}</div>
-            <div className="text-xs text-white/30 font-mono">{m.label}</div>
-          </motion.div>
+      {/* Animated metrics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        {metrics.map((m) => (
+          <MetricCard key={m.label} label={m.label} value={m.value} color={m.color} />
         ))}
-      </motion.div>
+      </div>
 
-      {/* Chart visualization */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="glass rounded-2xl border border-blue-500/10 p-6 mb-12"
-      >
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <div className="text-xs font-mono text-white/25 mb-1">// anomaly_detection.chart</div>
-            <div className="text-sm font-semibold text-white/70">Transaction Risk Score — Last 12 Periods</div>
-          </div>
-          <div className="flex items-center gap-3 text-xs font-mono">
-            <span className="flex items-center gap-1.5 text-green-400/60">
-              <span className="w-2 h-2 rounded-full bg-green-500" />Normal
-            </span>
-            <span className="flex items-center gap-1.5 text-red-400/60">
-              <span className="w-2 h-2 rounded-full bg-red-500" />Anomaly
-            </span>
-          </div>
-        </div>
-
-        {/* Bar chart */}
-        <div className="flex items-end gap-2 h-32">
-          {chartData.map((val, i) => (
-            <motion.div
-              key={i}
-              initial={{ height: 0 }}
-              whileInView={{ height: `${val}%` }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 + 0.3, duration: 0.6, ease: "easeOut" }}
-              className={`flex-1 rounded-t-sm ${val > 80 ? "bg-red-500/60" : "bg-blue-500/40"} relative group`}
-              style={{ minHeight: "4px" }}
-            >
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-mono text-white/30 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                {val}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* X axis */}
-        <div className="flex gap-2 mt-2">
-          {chartData.map((_, i) => (
-            <div key={i} className="flex-1 text-center text-xs font-mono text-white/15">
-              T{i + 1}
-            </div>
-          ))}
-        </div>
-      </motion.div>
+      {/* Interactive chart */}
+      <AnomalyChart />
 
       {/* Domain cards */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -166,16 +281,35 @@ export default function AIFintech() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.08, duration: 0.5 }}
               whileHover={{ y: -4 }}
-              className={`glass rounded-xl border ${domain.border} p-5 transition-all group`}
+              className="glass rounded-xl p-5 transition-all duration-300 group"
+              style={{ border: `1px solid ${domain.border}` }}
             >
-              <div className={`w-9 h-9 rounded-lg ${domain.bg} border ${domain.border} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                <Icon size={16} className={domain.color} />
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center mb-3 transition-transform duration-200 group-hover:scale-110"
+                style={{ background: domain.bg, border: `1px solid ${domain.border}` }}
+              >
+                <Icon size={16} style={{ color: domain.color }} />
               </div>
-              <h3 className="text-sm font-semibold text-white/85 mb-2">{domain.title}</h3>
-              <p className="text-xs text-white/40 leading-relaxed mb-3">{domain.desc}</p>
+              <h3
+                className="text-sm font-semibold mb-2"
+                style={{ fontFamily: "var(--font-syne)", color: "var(--text-1)" }}
+              >
+                {domain.title}
+              </h3>
+              <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--text-3)", fontWeight: 300 }}>
+                {domain.desc}
+              </p>
               <div className="flex flex-wrap gap-1">
                 {domain.tags.map((tag) => (
-                  <span key={tag} className={`px-1.5 py-0.5 text-xs font-mono rounded ${domain.bg} ${domain.color} opacity-70`}>
+                  <span
+                    key={tag}
+                    className="px-1.5 py-0.5 text-xs rounded"
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      background: domain.bg,
+                      color: domain.color,
+                    }}
+                  >
                     {tag}
                   </span>
                 ))}

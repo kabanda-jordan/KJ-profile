@@ -55,10 +55,15 @@ export default function CommandPalette() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2 }}
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-3 py-2 glass rounded-xl border border-white/8 text-white/30 hover:text-white/60 hover:border-blue-500/20 transition-all text-xs font-mono group"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-3 py-2 glass rounded-xl transition-all text-xs group"
+        style={{
+          border: "1px solid rgba(255,255,255,0.07)",
+          fontFamily: "var(--font-mono)",
+          color: "var(--text-3)",
+        }}
         aria-label="Open command palette"
       >
-        <Terminal size={12} className="group-hover:text-blue-400 transition-colors" />
+        <Terminal size={12} style={{ color: "var(--accent)" }} />
         <span className="hidden sm:inline">⌘K</span>
       </motion.button>
 
@@ -82,18 +87,19 @@ export default function CommandPalette() {
               transition={{ duration: 0.15 }}
               className="fixed top-1/4 left-1/2 -translate-x-1/2 z-50 w-full max-w-lg"
             >
-              <div className="glass-strong rounded-2xl border border-blue-500/20 overflow-hidden shadow-2xl shadow-blue-500/10">
+              <div className="glass-strong rounded-2xl overflow-hidden shadow-2xl" style={{ border: "1px solid rgba(0,255,136,0.15)", boxShadow: "0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,255,136,0.05)" }}>
                 {/* Search input */}
-                <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5">
-                  <Search size={15} className="text-white/30 flex-shrink-0" />
+                <div className="flex items-center gap-3 px-4 py-3 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+                  <Search size={15} style={{ color: "var(--text-3)" }} className="flex-shrink-0" />
                   <input
                     autoFocus
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search commands..."
-                    className="flex-1 bg-transparent text-white/80 text-sm font-mono placeholder:text-white/20 focus:outline-none"
+                    className="flex-1 bg-transparent text-sm focus:outline-none"
+                    style={{ fontFamily: "var(--font-mono)", color: "var(--text-1)" }}
                   />
-                  <button onClick={close} className="text-white/20 hover:text-white/50 transition-colors">
+                  <button onClick={close} style={{ color: "var(--text-3)" }}>
                     <X size={14} />
                   </button>
                 </div>
@@ -101,7 +107,7 @@ export default function CommandPalette() {
                 {/* Commands */}
                 <div className="py-2 max-h-72 overflow-y-auto">
                   {filtered.length === 0 ? (
-                    <div className="px-4 py-6 text-center text-xs font-mono text-white/20">
+                    <div className="px-4 py-6 text-center text-xs" style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}>
                       No commands found
                     </div>
                   ) : (
@@ -111,15 +117,29 @@ export default function CommandPalette() {
                         <button
                           key={cmd.id}
                           onClick={() => run(cmd)}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-500/8 transition-colors group text-left"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 transition-colors text-left group"
+                          style={{ background: "transparent" }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,255,136,0.05)")}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                         >
-                          <div className="w-7 h-7 rounded-lg bg-white/3 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500/15 transition-colors">
-                            <Icon size={13} className="text-white/40 group-hover:text-blue-400 transition-colors" />
+                          <div
+                            className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+                            style={{ background: "rgba(255,255,255,0.03)" }}
+                          >
+                            <Icon size={13} style={{ color: "var(--text-3)" }} />
                           </div>
-                          <span className="flex-1 text-sm font-mono text-white/60 group-hover:text-white/90 transition-colors">
+                          <span className="flex-1 text-sm" style={{ fontFamily: "var(--font-mono)", color: "var(--text-2)" }}>
                             {cmd.label}
                           </span>
-                          <kbd className="text-xs font-mono text-white/15 bg-white/5 px-1.5 py-0.5 rounded border border-white/8">
+                          <kbd
+                            className="text-xs px-1.5 py-0.5 rounded"
+                            style={{
+                              fontFamily: "var(--font-mono)",
+                              color: "var(--text-3)",
+                              background: "rgba(255,255,255,0.04)",
+                              border: "1px solid rgba(255,255,255,0.07)",
+                            }}
+                          >
                             {cmd.shortcut}
                           </kbd>
                         </button>
@@ -129,7 +149,10 @@ export default function CommandPalette() {
                 </div>
 
                 {/* Footer */}
-                <div className="px-4 py-2 border-t border-white/5 flex items-center gap-3 text-xs font-mono text-white/15">
+                <div
+                  className="px-4 py-2 border-t flex items-center gap-3 text-xs"
+                  style={{ borderColor: "rgba(255,255,255,0.05)", fontFamily: "var(--font-mono)", color: "var(--text-3)" }}
+                >
                   <span>↑↓ navigate</span>
                   <span>↵ select</span>
                   <span>esc close</span>
