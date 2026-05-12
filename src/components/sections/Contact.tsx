@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, GitBranch, Link, Mail, MapPin, Check, Copy, Clock } from "lucide-react";
+import { Send, GitBranch, Mail, MapPin, Check, Copy, Clock, Phone } from "lucide-react";
+import InstagramIcon from "@/components/ui/InstagramIcon";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 
 const MAX_MSG = 500;
@@ -127,15 +128,15 @@ function TimezoneStatus() {
   useEffect(() => {
     const update = () => {
       const now = new Date();
-      // EAT = UTC+3
-      const eatOffset = 3 * 60;
+      // CAT = UTC+2 (Africa/Kigali)
+      const catOffset = 2 * 60;
       const localOffset = -now.getTimezoneOffset();
-      const eatTime = new Date(now.getTime() + (eatOffset - localOffset) * 60000);
-      const h = eatTime.getUTCHours();
-      const m = eatTime.getUTCMinutes().toString().padStart(2, "0");
+      const catTime = new Date(now.getTime() + (catOffset - localOffset) * 60000);
+      const h = catTime.getUTCHours();
+      const m = catTime.getUTCMinutes().toString().padStart(2, "0");
       const period = h >= 6 && h < 20 ? "likely online" : "probably offline";
       const timeStr = `${h % 12 || 12}:${m} ${h >= 12 ? "PM" : "AM"}`;
-      setStatus(`Currently ${timeStr} in East Africa — ${period}`);
+      setStatus(`Currently ${timeStr} in Kigali — ${period}`);
     };
     update();
     const id = setInterval(update, 60000);
@@ -157,6 +158,7 @@ export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [copied, setCopied] = useState(false);
+  const [phoneRevealed, setPhoneRevealed] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -168,15 +170,33 @@ export default function Contact() {
   };
 
   const copyEmail = () => {
-    navigator.clipboard.writeText("kabandajordan@proton.me");
+    navigator.clipboard.writeText("kabandajordan784@gmail.com");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const socials = [
-    { icon: GitBranch, label: "GitHub", handle: "@kabanda-jordan", href: "https://github.com/kabanda-jordan" },
-    { icon: Link, label: "LinkedIn", handle: "kabanda-jordan", href: "https://linkedin.com/in/kabandajordan" },
-    { icon: Mail, label: "Email", handle: "kabandajordan@proton.me", href: "mailto:kabandajordan@proton.me", copyable: true },
+    {
+      icon: GitBranch,
+      label: "GitHub",
+      handle: "@kabanda-jordan",
+      href: "https://github.com/kabanda-jordan",
+      copyable: false,
+    },
+    {
+      icon: InstagramIcon,
+      label: "Instagram",
+      handle: "@darkside1429",
+      href: "https://instagram.com/darkside1429",
+      copyable: false,
+    },
+    {
+      icon: Mail,
+      label: "Email",
+      handle: "kabandajordan784@gmail.com",
+      href: "mailto:kabandajordan784@gmail.com",
+      copyable: true,
+    },
   ];
 
   return (
@@ -219,9 +239,29 @@ export default function Contact() {
               style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}
             >
               <MapPin size={14} style={{ color: "var(--accent)" }} />
-              East Africa — Remote-first
+              Kigali, Rwanda — Remote-first
             </div>
             <TimezoneStatus />
+            {/* Phone — hidden until revealed */}
+            <div className="flex items-center gap-2 text-xs" style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}>
+              <Phone size={12} style={{ color: "var(--accent)" }} />
+              {phoneRevealed ? (
+                <a
+                  href="tel:+250796892902"
+                  style={{ color: "var(--accent)" }}
+                >
+                  +250 796 892 902
+                </a>
+              ) : (
+                <button
+                  onClick={() => setPhoneRevealed(true)}
+                  className="underline underline-offset-2 transition-colors duration-200"
+                  style={{ color: "var(--text-3)", background: "none", border: "none", cursor: "pointer", fontFamily: "var(--font-mono)", fontSize: "12px" }}
+                >
+                  Click to reveal phone
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Socials */}

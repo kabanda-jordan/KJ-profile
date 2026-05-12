@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { FileText, ChevronDown, Terminal, Cpu, Shield, TrendingUp } from "lucide-react";
 import LinkedinIcon from "@/components/ui/LinkedinIcon";
 import GithubIcon from "@/components/ui/GithubIcon";
+import InstagramIcon from "@/components/ui/InstagramIcon";
 
 const roles = [
   "Full-Stack Engineer",
@@ -219,13 +220,22 @@ export default function Hero() {
             Resume
           </a>
           <a
-            href="https://github.com/kabandajordan"
+            href="https://github.com/kabanda-jordan"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-outline px-5 py-3.5 text-sm font-medium inline-flex items-center gap-2"
           >
             <GithubIcon size={14} />
             GitHub
+          </a>
+          <a
+            href="https://instagram.com/darkside1429"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-outline px-5 py-3.5 text-sm font-medium inline-flex items-center gap-2"
+          >
+            <InstagramIcon size={14} />
+            Instagram
           </a>
           <a
             href="https://linkedin.com/in/kabandajordan"

@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { Menu, X, Terminal } from "lucide-react";
 import LinkedinIcon from "@/components/ui/LinkedinIcon";
 import GithubIcon from "@/components/ui/GithubIcon";
+import InstagramIcon from "@/components/ui/InstagramIcon";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -150,7 +151,7 @@ export default function Navbar() {
           {/* Right actions */}
           <div className="flex items-center gap-1">
             <a
-              href="https://github.com/kabandajordan"
+              href="https://github.com/kabanda-jordan"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2.5 rounded-lg transition-colors duration-200"
@@ -160,14 +161,14 @@ export default function Navbar() {
               <GithubIcon size={16} />
             </a>
             <a
-              href="https://linkedin.com/in/kabandajordan"
+              href="https://instagram.com/darkside1429"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2.5 rounded-lg transition-colors duration-200"
               style={{ color: "var(--text-3)" }}
-              aria-label="LinkedIn"
+              aria-label="Instagram"
             >
-              <LinkedinIcon size={16} />
+              <InstagramIcon size={16} />
             </a>
             <a
               href="/resume.pdf"

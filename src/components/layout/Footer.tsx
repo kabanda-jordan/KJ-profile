@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { GitBranch, Link, Mail, Terminal } from "lucide-react";
+import { GitBranch, Mail, Terminal } from "lucide-react";
+import InstagramIcon from "@/components/ui/InstagramIcon";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -11,7 +12,6 @@ export default function Footer() {
       className="relative border-t py-14 px-4 sm:px-6 overflow-hidden"
       style={{ borderColor: "rgba(255,255,255,0.05)", background: "var(--bg)" }}
     >
-      {/* Glow */}
       <div
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-32 blur-3xl pointer-events-none"
         style={{ background: "radial-gradient(ellipse, rgba(0,255,136,0.04) 0%, transparent 70%)" }}
@@ -31,17 +31,11 @@ export default function Footer() {
                 className="w-7 h-7 rounded-lg flex items-center justify-center"
                 style={{ border: "1px solid rgba(0,255,136,0.25)", background: "rgba(0,255,136,0.05)" }}
               >
-                <span
-                  className="text-xs font-bold"
-                  style={{ fontFamily: "var(--font-syne)", color: "var(--accent)" }}
-                >
+                <span className="text-xs font-bold" style={{ fontFamily: "var(--font-syne)", color: "var(--accent)" }}>
                   KJ
                 </span>
               </div>
-              <span
-                className="text-sm"
-                style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}
-              >
+              <span className="text-sm" style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}>
                 KABANDA JORDAN
               </span>
             </div>
@@ -53,7 +47,7 @@ export default function Footer() {
             </p>
           </motion.div>
 
-          {/* Links */}
+          {/* Social links */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -62,15 +56,15 @@ export default function Footer() {
             className="flex items-center gap-3"
           >
             {[
-              { icon: GitBranch, href: "https://github.com/kabanda-jordan", label: "GitHub" },
-              { icon: Link, href: "https://linkedin.com/in/kabandajordan", label: "LinkedIn" },
-              { icon: Mail, href: "mailto:kabandajordan@proton.me", label: "Email" },
-            ].map(({ icon: Icon, href, label }) => (
+              { icon: GitBranch,     href: "https://github.com/kabanda-jordan",      label: "GitHub",    external: true },
+              { icon: InstagramIcon, href: "https://instagram.com/darkside1429",     label: "Instagram", external: true },
+              { icon: Mail,          href: "mailto:kabandajordan784@gmail.com",       label: "Email",     external: false },
+            ].map(({ icon: Icon, href, label, external }) => (
               <a
                 key={label}
                 href={href}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
                 aria-label={label}
                 className="p-2.5 rounded-lg transition-colors duration-200"
                 style={{ color: "var(--text-3)" }}
