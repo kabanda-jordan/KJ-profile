@@ -1,0 +1,144 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, Terminal, User, Code2, Shield, Brain, Trophy, Mail, GitBranch, FileText, X } from "lucide-react";
+
+const commands = [
+  { id: "hero", label: "Go to Home", icon: Terminal, action: () => window.scrollTo({ top: 0, behavior: "smooth" }), shortcut: "H" },
+  { id: "about", label: "About Me", icon: User, action: () => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" }), shortcut: "A" },
+  { id: "stack", label: "Tech Stack", icon: Code2, action: () => document.querySelector("#stack")?.scrollIntoView({ behavior: "smooth" }), shortcut: "S" },
+  { id: "projects", label: "Projects", icon: Code2, action: () => document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" }), shortcut: "P" },
+  { id: "security", label: "Cybersecurity", icon: Shield, action: () => document.querySelector("#cybersecurity")?.scrollIntoView({ behavior: "smooth" }), shortcut: "C" },
+  { id: "ai", label: "AI & FinTech", icon: Brain, action: () => document.querySelector("#ai-fintech")?.scrollIntoView({ behavior: "smooth" }), shortcut: "F" },
+  { id: "hackathons", label: "Hackathons", icon: Trophy, action: () => document.querySelector("#hackathons")?.scrollIntoView({ behavior: "smooth" }), shortcut: "K" },
+  { id: "contact", label: "Contact", icon: Mail, action: () => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" }), shortcut: "M" },
+  { id: "github", label: "Open GitHub", icon: GitBranch, action: () => window.open("https://github.com/kabanda-jordan", "_blank"), shortcut: "G" },
+  { id: "resume", label: "Download Resume", icon: FileText, action: () => window.open("/resume.pdf", "_blank"), shortcut: "R" },
+];
+
+export default function CommandPalette() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const filtered = commands.filter((c) =>
+    c.label.toLowerCase().includes(query.toLowerCase())
+  );
+
+  const close = useCallback(() => {
+    setOpen(false);
+    setQuery("");
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setOpen((o) => !o);
+      }
+      if (e.key === "Escape") close();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [close]);
+
+  const run = (cmd: typeof commands[0]) => {
+    cmd.action();
+    close();
+  };
+
+  return (
+    <>
+      {/* Trigger hint */}
+      <motion.button
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2 }}
+        onClick={() => setOpen(true)}
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-3 py-2 glass rounded-xl border border-white/8 text-white/30 hover:text-white/60 hover:border-blue-500/20 transition-all text-xs font-mono group"
+        aria-label="Open command palette"
+      >
+        <Terminal size={12} className="group-hover:text-blue-400 transition-colors" />
+        <span className="hidden sm:inline">⌘K</span>
+      </motion.button>
+
+      <AnimatePresence>
+        {open && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={close}
+              className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
+            />
+
+            {/* Palette */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -20 }}
+              transition={{ duration: 0.15 }}
+              className="fixed top-1/4 left-1/2 -translate-x-1/2 z-50 w-full max-w-lg"
+            >
+              <div className="glass-strong rounded-2xl border border-blue-500/20 overflow-hidden shadow-2xl shadow-blue-500/10">
+                {/* Search input */}
+                <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5">
+                  <Search size={15} className="text-white/30 flex-shrink-0" />
+                  <input
+                    autoFocus
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search commands..."
+                    className="flex-1 bg-transparent text-white/80 text-sm font-mono placeholder:text-white/20 focus:outline-none"
+                  />
+                  <button onClick={close} className="text-white/20 hover:text-white/50 transition-colors">
+                    <X size={14} />
+                  </button>
+                </div>
+
+                {/* Commands */}
+                <div className="py-2 max-h-72 overflow-y-auto">
+                  {filtered.length === 0 ? (
+                    <div className="px-4 py-6 text-center text-xs font-mono text-white/20">
+                      No commands found
+                    </div>
+                  ) : (
+                    filtered.map((cmd) => {
+                      const Icon = cmd.icon;
+                      return (
+                        <button
+                          key={cmd.id}
+                          onClick={() => run(cmd)}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-500/8 transition-colors group text-left"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-white/3 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500/15 transition-colors">
+                            <Icon size={13} className="text-white/40 group-hover:text-blue-400 transition-colors" />
+                          </div>
+                          <span className="flex-1 text-sm font-mono text-white/60 group-hover:text-white/90 transition-colors">
+                            {cmd.label}
+                          </span>
+                          <kbd className="text-xs font-mono text-white/15 bg-white/5 px-1.5 py-0.5 rounded border border-white/8">
+                            {cmd.shortcut}
+                          </kbd>
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-4 py-2 border-t border-white/5 flex items-center gap-3 text-xs font-mono text-white/15">
+                  <span>↑↓ navigate</span>
+                  <span>↵ select</span>
+                  <span>esc close</span>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
