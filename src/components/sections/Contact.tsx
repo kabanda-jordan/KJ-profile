@@ -188,7 +188,10 @@ export default function Contact() {
       sectionNumber="09"
       bgVariant="alt2"
     >
-      <div className="grid lg:grid-cols-2 gap-14">
+      <div
+        className="grid lg:grid-cols-2 gap-14"
+        style={{ alignItems: "start" }}
+      >
         {/* Left: Info */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -196,6 +199,7 @@ export default function Contact() {
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
           className="space-y-8"
+          style={{ paddingLeft: "1.5rem" }}
         >
           <div className="space-y-4 text-sm leading-relaxed" style={{ color: "var(--text-3)", fontWeight: 300 }}>
             <p>

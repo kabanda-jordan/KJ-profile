@@ -287,16 +287,18 @@ export default function Projects() {
               <div
                 className={`overflow-hidden flex-shrink-0 ${
                   isFeatured
-                    ? "lg:w-72 xl:w-80 h-48 lg:h-auto"
-                    : "h-36"
+                    ? "lg:w-64 xl:w-72 h-48 lg:h-auto"
+                    : "h-32"
                 } transition-transform duration-500 group-hover:scale-[1.02]`}
-                style={{ background: project.bg }}
+                style={{ background: project.bg, maxWidth: isFeatured ? "288px" : "100%" }}
               >
-                <ProjectVisual type={project.visual} color={project.color} />
+                <div style={{ opacity: 0.1, width: "100%", height: "100%" }}>
+                  <ProjectVisual type={project.visual} color={project.color} />
+                </div>
               </div>
 
               {/* Content */}
-              <div className="relative z-10 p-6 flex-1">
+              <div className="relative z-10 flex-1" style={{ padding: "1.5rem" }}>
                 {/* Header */}
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-3">

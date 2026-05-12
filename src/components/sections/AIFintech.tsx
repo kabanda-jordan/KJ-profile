@@ -11,11 +11,14 @@ function useCountUp(target: string, inView: boolean) {
 
   useEffect(() => {
     if (!inView) return;
-    const isMs = target.includes("ms");
+
+    // Special case: "10K TPS" — raw value is 10000 but we display as "XK TPS"
     const isTPS = target.includes("TPS");
+    const isMs = target.includes("ms");
     const isPct = target.includes("%");
     const isLt = target.startsWith("<");
 
+    // Extract the numeric part
     const raw = parseFloat(target.replace(/[^0-9.]/g, ""));
     const duration = 1400;
     const start = performance.now();
@@ -24,13 +27,20 @@ function useCountUp(target: string, inView: boolean) {
       const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      const current = Math.round(eased * raw);
+      const current = eased * raw;
 
-      if (isMs) setDisplay(`<${current}ms`);
-      else if (isTPS) setDisplay(`${(current / 1000).toFixed(current >= 1000 ? 0 : 1)}K TPS`);
-      else if (isPct && isLt) setDisplay(`<${(eased * raw).toFixed(1)}%`);
-      else if (isPct) setDisplay(`${current}%+`);
-      else setDisplay(String(current));
+      if (isTPS) {
+        // raw = 10 (from "10K TPS"), display as "XK TPS"
+        setDisplay(`${Math.round(current)}K TPS`);
+      } else if (isMs) {
+        setDisplay(`<${Math.round(current)}ms`);
+      } else if (isPct && isLt) {
+        setDisplay(`<${current.toFixed(1)}%`);
+      } else if (isPct) {
+        setDisplay(`${Math.round(current)}%+`);
+      } else {
+        setDisplay(String(Math.round(current)));
+      }
 
       if (progress < 1) requestAnimationFrame(tick);
     };
@@ -49,8 +59,8 @@ function MetricCard({ label, value, color }: { label: string; value: string; col
   return (
     <div
       ref={ref}
-      className="glass rounded-xl border p-5 text-center"
-      style={{ borderColor: "rgba(255,255,255,0.06)" }}
+      className="glass rounded-xl border p-5 text-center flex flex-col items-center justify-center"
+      style={{ borderColor: "rgba(255,255,255,0.06)", minHeight: "80px" }}
     >
       <div
         className="text-2xl font-bold font-mono mb-1"
@@ -260,7 +270,10 @@ export default function AIFintech() {
       bgVariant="alt3"
     >
       {/* Animated metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+      <div
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
+        style={{ alignItems: "stretch" }}
+      >
         {metrics.map((m) => (
           <MetricCard key={m.label} label={m.label} value={m.value} color={m.color} />
         ))}

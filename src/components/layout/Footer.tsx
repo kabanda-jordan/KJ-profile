@@ -46,8 +46,8 @@ export default function Footer() {
               </span>
             </div>
             <p
-              className="text-xs italic max-w-xs text-center sm:text-left"
-              style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)", opacity: 0.6 }}
+              className="text-xs italic text-center sm:text-left"
+              style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)", opacity: 0.6, maxWidth: "400px" }}
             >
               &quot;Build systems that survive contact with reality.&quot;
             </p>

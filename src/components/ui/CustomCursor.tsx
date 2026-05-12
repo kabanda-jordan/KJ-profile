@@ -71,18 +71,26 @@ export default function CustomCursor() {
 
   return (
     <>
+      {/* Ring — z-index 9999, pointer-events none so it never blocks text/clicks */}
       <div
         ref={cursorRef}
-        className="fixed pointer-events-none z-[9999] w-8 h-8 rounded-full -translate-x-1/2 -translate-y-1/2 hidden md:block"
+        className="fixed w-8 h-8 rounded-full -translate-x-1/2 -translate-y-1/2 hidden md:block"
         style={{
+          pointerEvents: "none",
+          zIndex: 9999,
           border: "1.5px solid rgba(0, 255, 136, 0.5)",
           transition: "transform 0.2s ease, border-color 0.2s ease, background 0.2s ease",
         }}
       />
+      {/* Dot */}
       <div
         ref={dotRef}
-        className="fixed pointer-events-none z-[9999] w-1.5 h-1.5 rounded-full -translate-x-1/2 -translate-y-1/2 hidden md:block"
-        style={{ background: "var(--accent)" }}
+        className="fixed w-1.5 h-1.5 rounded-full -translate-x-1/2 -translate-y-1/2 hidden md:block"
+        style={{
+          pointerEvents: "none",
+          zIndex: 9999,
+          background: "var(--accent)",
+        }}
       />
     </>
   );

@@ -93,7 +93,8 @@ export default function Experience() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.08, duration: 0.6 }}
-                className="relative pl-14 sm:pl-20"
+                className="relative"
+                style={{ paddingLeft: "5rem", position: "relative", zIndex: 1 }}
               >
                 {/* Animated node */}
                 <motion.div

@@ -36,7 +36,10 @@ export default function About() {
       sectionNumber="01"
       bgVariant="alt1"
     >
-      <div className="grid lg:grid-cols-2 gap-16 items-start">
+      <div
+        className="grid lg:grid-cols-2 items-start"
+        style={{ gap: "3rem" }}
+      >
         {/* Left: Avatar + traits */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -44,6 +47,7 @@ export default function About() {
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
           className="flex flex-col items-center lg:items-start gap-8"
+          style={{ minWidth: "220px" }}
         >
           {/* Avatar placeholder — replace with real headshot */}
           <div className="relative">
@@ -187,7 +191,11 @@ export default function About() {
       </div>
 
       {/* Stats grid */}
-      <div ref={statsRef} className="mt-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div
+        ref={statsRef}
+        className="mt-20"
+        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))", gap: "1rem" }}
+      >
         {stats.map(({ value, label, icon: Icon, color }, i) => (
           <motion.div
             key={label}

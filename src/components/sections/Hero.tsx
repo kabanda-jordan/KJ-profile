@@ -105,7 +105,10 @@ export default function Hero() {
         style={{ background: "radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)", animationDelay: "1.5s" }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center pt-24 pb-16">
+      <div
+        className="relative text-center pt-24 pb-16"
+        style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1.5rem", paddingRight: "1.5rem", zIndex: 1 }}
+      >
 
         {/* Status badge */}
         <motion.div
@@ -135,8 +138,13 @@ export default function Hero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="heading-xl"
-              style={{ color: "rgba(255,255,255,0.55)", fontFamily: "var(--font-syne)" }}
+              style={{
+                color: "rgba(255,255,255,0.55)",
+                fontFamily: "var(--font-syne)",
+                fontSize: "clamp(28px, 5vw, 64px)",
+                fontWeight: 800,
+                lineHeight: 1,
+              }}
             >
               Hi, I&apos;m
             </motion.span>
@@ -148,8 +156,15 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 60, skewY: 4 }}
                 animate={{ opacity: 1, y: 0, skewY: 0 }}
                 transition={{ duration: 0.7, delay: 0.25 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
-                className="heading-xl gradient-text"
-                style={{ fontFamily: "var(--font-syne)", display: "inline-block" }}
+                className="gradient-text"
+                style={{
+                  fontFamily: "var(--font-syne)",
+                  display: "inline-block",
+                  fontSize: "clamp(48px, 10vw, 140px)",
+                  fontWeight: 800,
+                  lineHeight: 0.95,
+                  letterSpacing: "-0.03em",
+                }}
               >
                 {word}
               </motion.span>
@@ -189,7 +204,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.9 }}
-          className="flex flex-wrap items-center justify-center gap-3 mb-12"
+          className="flex flex-wrap items-center justify-center gap-3 mb-8"
         >
           <a
             href="#projects"
@@ -235,7 +250,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1.1 }}
-          className="flex flex-wrap items-center justify-center gap-2 mb-14"
+          className="flex flex-wrap items-center justify-center gap-2 mb-8"
         >
           {floatingBadges.map(({ icon: Icon, label, delay }) => (
             <motion.div
@@ -252,46 +267,48 @@ export default function Hero() {
           ))}
         </motion.div>
 
-        {/* Terminal snippet */}
+        {/* Terminal snippet — 2rem margin-top from CTAs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.3 }}
-          className="max-w-lg mx-auto terminal-block p-5 text-left"
+          style={{ maxWidth: "32rem", margin: "2rem auto 0" }}
         >
-          <div className="flex items-center gap-1.5 mb-4">
-            <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
-            <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
-            <div className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
-            <span className="ml-2 text-xs" style={{ color: "var(--text-3)", fontFamily: "var(--font-mono)" }}>terminal</span>
-          </div>
-          <div className="space-y-1.5 text-xs" style={{ fontFamily: "var(--font-mono)" }}>
-            <div>
-              <span style={{ color: "var(--accent)" }}>jordan@dev</span>
-              <span style={{ color: "var(--text-3)" }}>:</span>
-              <span style={{ color: "#3b82f6" }}>~</span>
-              <span style={{ color: "var(--text-3)" }}>$</span>{" "}
-              <span style={{ color: "rgba(255,255,255,0.7)" }}>whoami</span>
+          <div className="terminal-block p-5 text-left">
+            <div className="flex items-center gap-1.5 mb-4">
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
+              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
+              <div className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
+              <span className="ml-2 text-xs" style={{ color: "var(--text-3)", fontFamily: "var(--font-mono)" }}>terminal</span>
             </div>
-            <div style={{ color: "var(--accent)", paddingLeft: "12px" }}>
-              systems_engineer | ai_researcher | security_enthusiast
-            </div>
-            <div>
-              <span style={{ color: "var(--accent)" }}>jordan@dev</span>
-              <span style={{ color: "var(--text-3)" }}>:</span>
-              <span style={{ color: "#3b82f6" }}>~</span>
-              <span style={{ color: "var(--text-3)" }}>$</span>{" "}
-              <span style={{ color: "rgba(255,255,255,0.7)" }}>cat mission.txt</span>
-            </div>
-            <div style={{ color: "var(--text-2)", paddingLeft: "12px" }}>
-              Building production-grade systems at the edge of what&apos;s possible.
-            </div>
-            <div className="flex items-center gap-1">
-              <span style={{ color: "var(--accent)" }}>jordan@dev</span>
-              <span style={{ color: "var(--text-3)" }}>:</span>
-              <span style={{ color: "#3b82f6" }}>~</span>
-              <span style={{ color: "var(--text-3)" }}>$</span>
-              <span className="cursor-blink ml-1" style={{ color: "var(--accent)" }}>█</span>
+            <div className="space-y-1.5 text-xs" style={{ fontFamily: "var(--font-mono)" }}>
+              <div>
+                <span style={{ color: "var(--accent)" }}>jordan@dev</span>
+                <span style={{ color: "var(--text-3)" }}>:</span>
+                <span style={{ color: "#3b82f6" }}>~</span>
+                <span style={{ color: "var(--text-3)" }}>$</span>{" "}
+                <span style={{ color: "rgba(255,255,255,0.7)" }}>whoami</span>
+              </div>
+              <div style={{ color: "var(--accent)", paddingLeft: "12px" }}>
+                systems_engineer | ai_researcher | security_enthusiast
+              </div>
+              <div>
+                <span style={{ color: "var(--accent)" }}>jordan@dev</span>
+                <span style={{ color: "var(--text-3)" }}>:</span>
+                <span style={{ color: "#3b82f6" }}>~</span>
+                <span style={{ color: "var(--text-3)" }}>$</span>{" "}
+                <span style={{ color: "rgba(255,255,255,0.7)" }}>cat mission.txt</span>
+              </div>
+              <div style={{ color: "var(--text-2)", paddingLeft: "12px" }}>
+                Building production-grade systems at the edge of what&apos;s possible.
+              </div>
+              <div className="flex items-center gap-1">
+                <span style={{ color: "var(--accent)" }}>jordan@dev</span>
+                <span style={{ color: "var(--text-3)" }}>:</span>
+                <span style={{ color: "#3b82f6" }}>~</span>
+                <span style={{ color: "var(--text-3)" }}>$</span>
+                <span className="cursor-blink ml-1" style={{ color: "var(--accent)" }}>█</span>
+              </div>
             </div>
           </div>
         </motion.div>

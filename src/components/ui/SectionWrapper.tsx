@@ -39,8 +39,8 @@ export default function SectionWrapper({
     <section
       id={id}
       ref={ref}
-      className={cn("relative py-28 px-4 sm:px-6 overflow-hidden", className)}
-      style={{ background: bgMap[bgVariant] }}
+      className={cn("relative overflow-hidden", className)}
+      style={{ background: bgMap[bgVariant], paddingTop: "6rem", paddingBottom: "6rem" }}
     >
       {/* Faint section number */}
       {sectionNumber && (
@@ -49,7 +49,7 @@ export default function SectionWrapper({
         </span>
       )}
 
-      <div className="max-w-6xl mx-auto">
+      <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1.5rem", paddingRight: "1.5rem", position: "relative", zIndex: 1 }}>
         {(label || title || subtitle) && (
           <motion.div
             initial={{ opacity: 0, y: 32 }}
@@ -85,8 +85,8 @@ export default function SectionWrapper({
             )}
             {subtitle && (
               <p
-                className="max-w-2xl mx-auto text-base leading-relaxed"
-                style={{ color: "var(--text-3)", fontWeight: 300 }}
+                className="text-base leading-relaxed"
+                style={{ color: "var(--text-3)", fontWeight: 300, maxWidth: "600px", margin: "0 auto", textAlign: "center" }}
               >
                 {subtitle}
               </p>

@@ -119,7 +119,7 @@ export default function Navbar() {
           </button>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-0.5">
+          <div className="hidden lg:flex items-center" style={{ gap: "1.5rem" }}>
             {navLinks.map(({ label, href }) => {
               const isActive = activeSection === href.slice(1);
               return (

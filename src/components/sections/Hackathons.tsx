@@ -192,7 +192,14 @@ export default function Hackathons() {
       </motion.div>
 
       {/* Cards grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: "1rem",
+          alignItems: "start",
+        }}
+      >
         {hackathons.map((h, i) => {
           const c = colorMap[h.color];
           const badge = placementBadge[h.placement];
