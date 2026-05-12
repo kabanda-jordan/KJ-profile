@@ -85,8 +85,8 @@ export default function Hero() {
     <section
       ref={heroRef}
       id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: "var(--bg)" }}
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden w-full px-4 sm:px-8 lg:px-16"
+      style={{ background: "var(--bg)", position: "relative", zIndex: 1 }}
     >
       {/* Animated mesh background */}
       <motion.div
@@ -106,8 +106,8 @@ export default function Hero() {
       />
 
       <div
-        className="relative text-center pt-24 pb-16"
-        style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1.5rem", paddingRight: "1.5rem", zIndex: 1 }}
+        className="relative text-center pt-24 pb-16 w-full"
+        style={{ maxWidth: "1280px", margin: "0 auto", zIndex: 1 }}
       >
 
         {/* Status badge */}
@@ -156,15 +156,8 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 60, skewY: 4 }}
                 animate={{ opacity: 1, y: 0, skewY: 0 }}
                 transition={{ duration: 0.7, delay: 0.25 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
-                className="gradient-text"
-                style={{
-                  fontFamily: "var(--font-syne)",
-                  display: "inline-block",
-                  fontSize: "clamp(48px, 10vw, 140px)",
-                  fontWeight: 800,
-                  lineHeight: 0.95,
-                  letterSpacing: "-0.03em",
-                }}
+                className="gradient-text text-[clamp(3rem,10vw,9rem)] font-black leading-none"
+                style={{ fontFamily: "var(--font-syne)", display: "inline-block", letterSpacing: "-0.03em" }}
               >
                 {word}
               </motion.span>

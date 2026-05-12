@@ -39,17 +39,16 @@ export default function SectionWrapper({
     <section
       id={id}
       ref={ref}
-      className={cn("relative overflow-hidden", className)}
-      style={{ background: bgMap[bgVariant], paddingTop: "6rem", paddingBottom: "6rem" }}
+      className={cn("relative overflow-hidden w-full px-4 sm:px-8 lg:px-16", className)}
+      style={{ background: bgMap[bgVariant], position: "relative", zIndex: 1 }}
     >
-      {/* Faint section number */}
       {sectionNumber && (
         <span className="section-number" aria-hidden="true">
           {sectionNumber}
         </span>
       )}
 
-      <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1.5rem", paddingRight: "1.5rem", position: "relative", zIndex: 1 }}>
+      <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
         {(label || title || subtitle) && (
           <motion.div
             initial={{ opacity: 0, y: 32 }}
@@ -68,10 +67,7 @@ export default function SectionWrapper({
                   fontSize: "11px",
                 }}
               >
-                <span
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: "var(--accent)" }}
-                />
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--accent)" }} />
                 {label}
               </div>
             )}
@@ -86,7 +82,7 @@ export default function SectionWrapper({
             {subtitle && (
               <p
                 className="text-base leading-relaxed"
-                style={{ color: "var(--text-3)", fontWeight: 300, maxWidth: "600px", margin: "0 auto", textAlign: "center" }}
+                style={{ color: "var(--text-3)", fontWeight: 300, maxWidth: "600px", margin: "0 auto" }}
               >
                 {subtitle}
               </p>

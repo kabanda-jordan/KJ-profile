@@ -17,7 +17,7 @@ export default function Footer() {
         style={{ background: "radial-gradient(ellipse, rgba(0,255,136,0.04) 0%, transparent 70%)" }}
       />
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Brand */}
           <motion.div

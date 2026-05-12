@@ -26,19 +26,8 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Kabanda Jordan — Systems Engineer & AI Researcher",
   description:
-    "Portfolio of Kabanda Jordan — Full-Stack Engineer, AI Enthusiast, Cybersecurity Researcher, and FinTech Builder. Building at the intersection of distributed systems, AI, and security.",
-  keywords: [
-    "Kabanda Jordan",
-    "Software Engineer",
-    "Full-Stack Developer",
-    "AI Engineer",
-    "Cybersecurity",
-    "FinTech",
-    "Systems Engineer",
-    "Next.js",
-    "TypeScript",
-    "Portfolio",
-  ],
+    "Portfolio of Kabanda Jordan — Full-Stack Engineer, AI Enthusiast, Cybersecurity Researcher, and FinTech Builder.",
+  keywords: ["Kabanda Jordan", "Software Engineer", "Full-Stack Developer", "AI Engineer", "Cybersecurity", "FinTech", "Systems Engineer", "Next.js", "TypeScript", "Portfolio"],
   authors: [{ name: "Kabanda Jordan" }],
   creator: "Kabanda Jordan",
   openGraph: {
@@ -46,8 +35,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://kabanda-jordan.vercel.app",
     title: "Kabanda Jordan — Systems Engineer & AI Researcher",
-    description:
-      "Building at the intersection of distributed systems, AI, cybersecurity, and fintech infrastructure.",
+    description: "Building at the intersection of distributed systems, AI, cybersecurity, and fintech infrastructure.",
     siteName: "Kabanda Jordan Portfolio",
   },
   twitter: {
@@ -72,11 +60,10 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
         />
       </head>
-      <body
-        className={`${inter.className} antialiased bg-[#0a0a0a] text-white`}
-        style={{ fontFamily: "var(--font-inter), sans-serif" }}
-      >
-        {children}
+      <body className={`${inter.className} antialiased bg-[#0a0a0a] text-white overflow-x-hidden`}>
+        <main className="w-full max-w-[1400px] mx-auto">
+          {children}
+        </main>
       </body>
     </html>
   );

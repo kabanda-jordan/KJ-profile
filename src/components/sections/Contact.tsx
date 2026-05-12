@@ -199,7 +199,6 @@ export default function Contact() {
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
           className="space-y-8"
-          style={{ paddingLeft: "1.5rem" }}
         >
           <div className="space-y-4 text-sm leading-relaxed" style={{ color: "var(--text-3)", fontWeight: 300 }}>
             <p>

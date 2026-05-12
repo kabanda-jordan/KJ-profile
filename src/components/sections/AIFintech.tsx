@@ -7,18 +7,20 @@ import SectionWrapper from "@/components/ui/SectionWrapper";
 
 // ─── Animated counter ────────────────────────────────────────
 function useCountUp(target: string, inView: boolean) {
-  const [display, setDisplay] = useState("0");
+  const [display, setDisplay] = useState(target);
 
   useEffect(() => {
     if (!inView) return;
 
-    // Special case: "10K TPS" — raw value is 10000 but we display as "XK TPS"
-    const isTPS = target.includes("TPS");
+    // "10K TPS" — render directly, no animation needed
+    if (target.includes("TPS")) {
+      setDisplay("10K TPS");
+      return;
+    }
+
     const isMs = target.includes("ms");
     const isPct = target.includes("%");
     const isLt = target.startsWith("<");
-
-    // Extract the numeric part
     const raw = parseFloat(target.replace(/[^0-9.]/g, ""));
     const duration = 1400;
     const start = performance.now();
@@ -29,22 +31,15 @@ function useCountUp(target: string, inView: boolean) {
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = eased * raw;
 
-      if (isTPS) {
-        // raw = 10 (from "10K TPS"), display as "XK TPS"
-        setDisplay(`${Math.round(current)}K TPS`);
-      } else if (isMs) {
-        setDisplay(`<${Math.round(current)}ms`);
-      } else if (isPct && isLt) {
-        setDisplay(`<${current.toFixed(1)}%`);
-      } else if (isPct) {
-        setDisplay(`${Math.round(current)}%+`);
-      } else {
-        setDisplay(String(Math.round(current)));
-      }
+      if (isMs) setDisplay(`<${Math.round(current)}ms`);
+      else if (isPct && isLt) setDisplay(`<${current.toFixed(1)}%`);
+      else if (isPct) setDisplay(`${Math.round(current)}%+`);
+      else setDisplay(String(Math.round(current)));
 
       if (progress < 1) requestAnimationFrame(tick);
     };
 
+    setDisplay(isMs ? "<0ms" : isLt ? "<0%" : "0%+");
     requestAnimationFrame(tick);
   }, [inView, target]);
 

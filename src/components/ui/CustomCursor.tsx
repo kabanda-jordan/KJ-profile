@@ -71,7 +71,6 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Ring — z-index 9999, pointer-events none so it never blocks text/clicks */}
       <div
         ref={cursorRef}
         className="fixed w-8 h-8 rounded-full -translate-x-1/2 -translate-y-1/2 hidden md:block"
@@ -82,7 +81,6 @@ export default function CustomCursor() {
           transition: "transform 0.2s ease, border-color 0.2s ease, background 0.2s ease",
         }}
       />
-      {/* Dot */}
       <div
         ref={dotRef}
         className="fixed w-1.5 h-1.5 rounded-full -translate-x-1/2 -translate-y-1/2 hidden md:block"

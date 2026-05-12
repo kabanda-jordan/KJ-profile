@@ -1,7 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
-/* ─── Design Tokens ─────────────────────────────────────────── */
+/* ─── Box model foundation ───────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
+section { padding: 6rem 1.5rem; position: relative; z-index: 1; }
 :root {
   --bg:        #0a0a0a;
   --bg-1:      #0d0d0d;
@@ -25,8 +28,7 @@
   --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* ─── Reset ─────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; padding: 0; margin: 0; }
+/* ─── Design Tokens ─────────────────────────────────────────── */
 
 html {
   scroll-behavior: smooth;
@@ -44,9 +46,6 @@ body {
   line-height: 1.7;
   letter-spacing: 0.01em;
 }
-
-/* Section content always above cursor ring (z-index 9999 is cursor, content sits at z-index 1+) */
-section > * { position: relative; z-index: 1; }
 
 /* ─── Scrollbar ──────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 3px; }

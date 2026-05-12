@@ -89,7 +89,7 @@ export default function Navbar() {
             : { background: "transparent" }
         }
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 flex items-center justify-between">
           {/* Logo */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -119,7 +119,7 @@ export default function Navbar() {
           </button>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center" style={{ gap: "1.5rem" }}>
+          <div className="hidden lg:flex items-center gap-x-6">
             {navLinks.map(({ label, href }) => {
               const isActive = activeSection === href.slice(1);
               return (
