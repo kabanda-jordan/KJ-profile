@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "KJ",
+  title: "Kabanda Jordan — Systems Engineer & AI Researcher",
   description:
     "Portfolio of Kabanda Jordan — Full-Stack Engineer, AI Enthusiast, Cybersecurity Researcher, and FinTech Builder.",
   keywords: ["Kabanda Jordan", "Software Engineer", "Full-Stack Developer", "AI Engineer", "Cybersecurity", "FinTech", "Systems Engineer", "Next.js", "TypeScript", "Portfolio"],
@@ -12,16 +12,20 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://kabanda-jordan.vercel.app",
-    title: "KJ",
+    title: "Kabanda Jordan — Systems Engineer & AI Researcher",
     description: "Building at the intersection of distributed systems, AI, cybersecurity, and fintech infrastructure.",
-    siteName: "KJ Portfolio",
+    siteName: "Kabanda Jordan Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "KJ",
+    title: "Kabanda Jordan — Systems Engineer",
     description: "Full-Stack Engineer · AI Researcher · Cybersecurity · FinTech Builder",
   },
   robots: { index: true, follow: true },
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
