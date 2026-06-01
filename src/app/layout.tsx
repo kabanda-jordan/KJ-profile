@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kabanda Jordan — Systems Engineer & AI Researcher",
+  title: "KJ",
   description:
     "Portfolio of Kabanda Jordan — Full-Stack Engineer, AI Enthusiast, Cybersecurity Researcher, and FinTech Builder.",
   keywords: ["Kabanda Jordan", "Software Engineer", "Full-Stack Developer", "AI Engineer", "Cybersecurity", "FinTech", "Systems Engineer", "Next.js", "TypeScript", "Portfolio"],
@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://kabanda-jordan.vercel.app",
-    title: "Kabanda Jordan — Systems Engineer & AI Researcher",
+    title: "KJ",
     description: "Building at the intersection of distributed systems, AI, cybersecurity, and fintech infrastructure.",
-    siteName: "Kabanda Jordan Portfolio",
+    siteName: "KJ Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kabanda Jordan — Systems Engineer",
+    title: "KJ",
     description: "Full-Stack Engineer · AI Researcher · Cybersecurity · FinTech Builder",
   },
   robots: { index: true, follow: true },
