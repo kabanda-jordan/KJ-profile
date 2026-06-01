@@ -1,7 +1,4 @@
-import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,51 +14,61 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const { data, error } = await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: "kabandajordan784@gmail.com",
-      subject: `[Portfolio Contact] ${subject}`,
-      html: `
-        <div style="font-family: monospace; background: #0a0a0a; color: #e2e8f0; padding: 32px; border-radius: 8px; max-width: 600px;">
-          <h2 style="color: #00ff88; margin: 0 0 24px;">New message from your portfolio</h2>
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "Email service not configured" }, { status: 500 });
+    }
 
-          <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-              <td style="padding: 8px 0; color: #888; width: 80px;">From</td>
-              <td style="padding: 8px 0; color: #e2e8f0;">${name}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; color: #888;">Email</td>
-              <td style="padding: 8px 0;">
-                <a href="mailto:${email}" style="color: #00ff88;">${email}</a>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; color: #888;">Subject</td>
-              <td style="padding: 8px 0; color: #e2e8f0;">${subject}</td>
-            </tr>
-          </table>
-
-          <hr style="border: none; border-top: 1px solid #222; margin: 24px 0;" />
-
-          <p style="color: #888; margin: 0 0 8px; font-size: 12px;">MESSAGE</p>
-          <p style="color: #e2e8f0; white-space: pre-wrap; line-height: 1.6; margin: 0;">${message}</p>
-
-          <hr style="border: none; border-top: 1px solid #222; margin: 24px 0;" />
-          <p style="color: #444; font-size: 11px; margin: 0;">
-            Sent via kabanda-jordan.vercel.app portfolio contact form
-          </p>
-        </div>
-      `,
-      replyTo: email,
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "onboarding@resend.dev",
+        to: "kabandajordan784@gmail.com",
+        reply_to: email,
+        subject: `[Portfolio Contact] ${subject}`,
+        html: `
+          <div style="font-family:monospace;background:#0a0a0a;color:#e2e8f0;padding:32px;max-width:600px;">
+            <h2 style="color:#ffffff;margin:0 0 24px;font-size:18px;">New message from your portfolio</h2>
+            <table style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td style="padding:8px 0;color:#888;width:80px;">From</td>
+                <td style="padding:8px 0;color:#e2e8f0;">${name}</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0;color:#888;">Email</td>
+                <td style="padding:8px 0;">
+                  <a href="mailto:${email}" style="color:#ffffff;">${email}</a>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0;color:#888;">Subject</td>
+                <td style="padding:8px 0;color:#e2e8f0;">${subject}</td>
+              </tr>
+            </table>
+            <hr style="border:none;border-top:1px solid #222;margin:24px 0;" />
+            <p style="color:#888;margin:0 0 8px;font-size:12px;">MESSAGE</p>
+            <p style="color:#e2e8f0;white-space:pre-wrap;line-height:1.6;margin:0;">${message}</p>
+            <hr style="border:none;border-top:1px solid #222;margin:24px 0;" />
+            <p style="color:#444;font-size:11px;margin:0;">
+              Sent via kabanda-jordan.vercel.app
+            </p>
+          </div>
+        `,
+      }),
     });
 
-    if (error) {
-      console.error("Resend error:", error);
+    if (!res.ok) {
+      const err = await res.text();
+      console.error("Resend API error:", err);
       return NextResponse.json({ error: "Failed to send email" }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, id: data?.id }, { status: 200 });
+    const data = await res.json();
+    return NextResponse.json({ success: true, id: data.id }, { status: 200 });
   } catch (err) {
     console.error("Contact route error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
