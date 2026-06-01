@@ -128,7 +128,7 @@ export default function Experience() {
                       </span>
                       <h3
                         className="text-base font-semibold"
-                        style={{ fontFamily: "var(--font-syne)", color: "var(--text-1)" }}
+                        style={{ fontFamily: "var(--font-display)", color: "var(--text-1)" }}
                       >
                         {item.title}
                       </h3>

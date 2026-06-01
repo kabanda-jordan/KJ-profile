@@ -229,7 +229,7 @@ export default function Cybersecurity() {
                 <div>
                   <div
                     className="text-sm font-semibold mb-0.5"
-                    style={{ fontFamily: "var(--font-syne)", color: "var(--text-1)" }}
+                    style={{ fontFamily: "var(--font-display)", color: "var(--text-1)" }}
                   >
                     {skill.label}
                   </div>

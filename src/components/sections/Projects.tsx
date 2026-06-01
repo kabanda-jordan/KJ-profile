@@ -273,7 +273,7 @@ export default function Projects() {
               <span
                 className="absolute top-2 right-4 font-bold pointer-events-none select-none"
                 style={{
-                  fontFamily: "var(--font-syne)",
+                  fontFamily: "var(--font-display)",
                   fontSize: "clamp(48px, 8vw, 80px)",
                   color: "rgba(255,255,255,0.025)",
                   lineHeight: 1,
@@ -311,7 +311,7 @@ export default function Projects() {
                     <div>
                       <h3
                         className="text-base font-bold"
-                        style={{ fontFamily: "var(--font-syne)", color: "var(--text-1)" }}
+                        style={{ fontFamily: "var(--font-display)", color: "var(--text-1)" }}
                       >
                         {project.title}
                       </h3>

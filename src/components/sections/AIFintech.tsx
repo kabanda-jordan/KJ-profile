@@ -59,7 +59,7 @@ function MetricCard({ label, value, color }: { label: string; value: string; col
     >
       <div
         className="text-2xl font-bold font-mono mb-1"
-        style={{ color, fontFamily: "var(--font-syne)" }}
+        style={{ color, fontFamily: "var(--font-display)" }}
       >
         {display}
       </div>
@@ -98,7 +98,7 @@ function AnomalyChart() {
           <div className="text-xs mb-1" style={{ fontFamily: "var(--font-mono)", color: "var(--text-3)" }}>
             // anomaly_detection.chart
           </div>
-          <div className="text-sm font-semibold" style={{ color: "var(--text-2)", fontFamily: "var(--font-syne)" }}>
+          <div className="text-sm font-semibold" style={{ color: "var(--text-2)", fontFamily: "var(--font-display)" }}>
             Transaction Risk Score — Last 12 Periods
           </div>
         </div>
@@ -300,7 +300,7 @@ export default function AIFintech() {
               </div>
               <h3
                 className="text-sm font-semibold mb-2"
-                style={{ fontFamily: "var(--font-syne)", color: "var(--text-1)" }}
+                style={{ fontFamily: "var(--font-display)", color: "var(--text-1)" }}
               >
                 {domain.title}
               </h3>

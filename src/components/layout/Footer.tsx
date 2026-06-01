@@ -31,7 +31,7 @@ export default function Footer() {
                 className="w-7 h-7 rounded-lg flex items-center justify-center"
                 style={{ border: "1px solid rgba(0,255,136,0.25)", background: "rgba(0,255,136,0.05)" }}
               >
-                <span className="text-xs font-bold" style={{ fontFamily: "var(--font-syne)", color: "var(--accent)" }}>
+                <span className="text-xs font-bold" style={{ fontFamily: "var(--font-display)", color: "var(--accent)" }}>
                   KJ
                 </span>
               </div>

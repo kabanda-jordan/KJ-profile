@@ -401,7 +401,7 @@ export default function Contact() {
               whileTap={status === "idle" ? { scale: 0.98 } : {}}
               className="w-full flex items-center justify-center gap-2.5 py-4 rounded-xl text-sm font-semibold transition-all duration-300"
               style={{
-                fontFamily: "var(--font-syne)",
+                fontFamily: "var(--font-display)",
                 ...(status === "sent"
                   ? { background: "rgba(16,185,129,0.15)", color: "#10b981", border: "1px solid rgba(16,185,129,0.3)" }
                   : status === "error"

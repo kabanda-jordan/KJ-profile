@@ -74,7 +74,7 @@ export default function SectionWrapper({
             {title && (
               <h2
                 className="heading-md mb-4"
-                style={{ color: "var(--text-1)", fontFamily: "var(--font-syne)" }}
+                style={{ color: "var(--text-1)", fontFamily: "var(--font-display)" }}
               >
                 {title}
               </h2>

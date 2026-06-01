@@ -141,7 +141,7 @@ export default function Hero() {
               transition={{ duration: 0.5, delay: 0.1 }}
               style={{
                 color: "rgba(255,255,255,0.55)",
-                fontFamily: "var(--font-syne)",
+                fontFamily: "var(--font-display)",
                 fontSize: "clamp(28px, 5vw, 64px)",
                 fontWeight: 800,
                 lineHeight: 1,
@@ -158,7 +158,7 @@ export default function Hero() {
                 animate={{ opacity: 1, y: 0, skewY: 0 }}
                 transition={{ duration: 0.7, delay: 0.25 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
                 className="gradient-text text-[clamp(3rem,10vw,9rem)] font-black leading-none"
-                style={{ fontFamily: "var(--font-syne)", display: "inline-block", letterSpacing: "-0.03em" }}
+                style={{ fontFamily: "var(--font-display)", display: "inline-block", letterSpacing: "-0.03em" }}
               >
                 {word}
               </motion.span>
@@ -207,7 +207,7 @@ export default function Hero() {
               document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" });
             }}
             className="btn-primary px-7 py-3.5 text-sm font-semibold inline-flex items-center gap-2"
-            style={{ fontFamily: "var(--font-syne)" }}
+            style={{ fontFamily: "var(--font-display)" }}
           >
             View Projects
           </a>

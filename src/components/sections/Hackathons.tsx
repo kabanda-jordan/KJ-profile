@@ -180,7 +180,7 @@ export default function Hackathons() {
           >
             <div
               className="text-3xl font-bold mb-1"
-              style={{ fontFamily: "var(--font-syne)", color: "var(--accent)" }}
+              style={{ fontFamily: "var(--font-display)", color: "var(--accent)" }}
             >
               {s.value}
             </div>
@@ -247,7 +247,7 @@ export default function Hackathons() {
 
               <h3
                 className="text-sm font-semibold leading-snug"
-                style={{ fontFamily: "var(--font-syne)", color: "var(--text-1)" }}
+                style={{ fontFamily: "var(--font-display)", color: "var(--text-1)" }}
               >
                 {h.title}
               </h3>

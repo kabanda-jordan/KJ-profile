@@ -106,7 +106,7 @@ export default function Navbar() {
             >
               <span
                 className="text-sm font-bold"
-                style={{ fontFamily: "var(--font-syne)", color: "var(--accent)" }}
+                style={{ fontFamily: "var(--font-display)", color: "var(--accent)" }}
               >
                 KJ
               </span>
@@ -231,7 +231,7 @@ export default function Navbar() {
                   className="text-left py-3 border-b transition-all duration-200 group"
                   style={{
                     borderColor: "rgba(255,255,255,0.04)",
-                    fontFamily: "var(--font-syne)",
+                    fontFamily: "var(--font-display)",
                     fontSize: "clamp(24px, 5vw, 36px)",
                     fontWeight: 700,
                     color: activeSection === href.slice(1) ? "var(--accent)" : "var(--text-2)",
